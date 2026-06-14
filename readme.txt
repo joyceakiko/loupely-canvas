@@ -3,7 +3,7 @@ Contributors: loupely
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 8.0
-Stable tag: 2.2.0
+Stable tag: 2.2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: one-column, full-width-template, translation-ready, custom-colors, editor-style
@@ -51,6 +51,12 @@ From Appearance, Loupely Canvas. A single page can override them under the Heade
 This full edition is distributed through GitHub and loupelycanvas.com. It includes a built in update checker that watches the project's GitHub releases, so update notices appear in wp-admin and you can update in one click. The Loupely Canvas Lite edition on WordPress.org updates through the directory instead.
 
 == Changelog ==
+
+= 2.2.5 =
+* Find and replace now highlights matches with a visible overlay that stays in place no matter where the cursor is, so the current match is always clear.
+* Pressing Enter in a code box after a search inserts a newline normally and no longer replaces the highlighted match.
+* Replacements are undoable. Plain boxes (theme settings, per page boxes, classic editor) use the browser's own undo and redo. In the block editor, where its history does not reliably record edits made from outside, the find and replace tool keeps its own undo and redo for the replacements it makes.
+* Added a hint showing how to jump to the next match from inside the editor (F3, or Cmd+G on Mac).
 
 = 2.2.0 =
 * Added a GitHub based update checker so self-hosted installs receive update notices in wp-admin and can update in one click, without the WordPress.org directory.

@@ -1,0 +1,50 @@
+# Copyright (C) 2026 Loupely LLC
+# This file is distributed under the GNU General Public License v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Loupely Canvas 2.0.0\n"
+"Report-Msgid-Bugs-To: https://loupely.com/canvas\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language-Team: \n"
+"X-Domain: loupely-canvas\n"
+
+msgid "Loupely Canvas"
+msgstr ""
+
+msgid "Header HTML"
+msgstr ""
+
+msgid "Footer HTML"
+msgstr ""
+
+msgid "Head code"
+msgstr ""
+
+msgid "Body end code"
+msgstr ""
+
+msgid "Save changes"
+msgstr ""
+
+msgid "Create starter content"
+msgstr ""
+
+msgid "Header and footer (Loupely Canvas)"
+msgstr ""
+
+msgid "Header"
+msgstr ""
+
+msgid "Footer"
+msgstr ""
+
+msgid "Use the global header and footer"
+msgstr ""
+
+msgid "Use custom HTML for this page"
+msgstr ""
+
+msgid "Show none on this page"
+msgstr ""

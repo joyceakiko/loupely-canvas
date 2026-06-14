@@ -1,0 +1,56 @@
+/*
+Theme Name: Loupely Canvas
+Theme URI: https://loupely.com/canvas
+Author: Loupely LLC
+Author URI: https://loupely.com
+Description: A minimal passthrough theme for people who build in raw HTML and CSS. Paste your markup into a Custom HTML block and it renders full width with zero interference: no container max-widths, no injected block styles, no framework. Set a global header and footer, inject head and body code, override per page, and search inside any HTML box with a built in find and replace. No page builder, no build step.
+Version: 2.2.0
+Requires at least: 6.0
+Tested up to: 6.7
+Requires PHP: 8.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: loupely-canvas
+Tags: one-column, full-width-template, translation-ready, custom-colors, editor-style
+*/
+
+/*
+  Intentionally minimal.
+  All page styles are self contained in their own HTML blocks.
+  Only global resets and the body baseline live here.
+*/
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Full width content area with no theme imposed constraints */
+.lc-content {
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+  width: 100%;
+}
+
+.lc-content .wp-block-html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media screen {
+  html { margin-top: 0 !important; }
+  * html body { margin-top: 0 !important; }
+}

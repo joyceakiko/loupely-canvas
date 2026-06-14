@@ -1,0 +1,39 @@
+<style>
+  .lcx-page { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    color:#1a1d23; background:#ffffff; }
+  .lcx-hero { max-width:760px; margin:0 auto; padding:96px 24px 64px; text-align:center; }
+  .lcx-hero h1 { font-size:clamp(30px,5vw,52px); line-height:1.1; margin:0 0 18px;
+    font-weight:700; letter-spacing:-0.02em; }
+  .lcx-hero p { font-size:18px; line-height:1.6; color:#4a5159; margin:0 auto 32px; max-width:540px; }
+  .lcx-btn { display:inline-block; background:#1a1d23; color:#fff; text-decoration:none;
+    padding:13px 26px; border-radius:8px; font-size:15px; font-weight:600; }
+  .lcx-cols { max-width:960px; margin:0 auto; padding:24px 24px 96px;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:28px; }
+  .lcx-card { padding:24px; border:1px solid #e7e9ee; border-radius:12px; }
+  .lcx-card h3 { margin:0 0 8px; font-size:17px; }
+  .lcx-card p { margin:0; color:#4a5159; font-size:14px; line-height:1.6; }
+  @media (max-width:720px){ .lcx-cols{ grid-template-columns:1fr; } .lcx-hero{ padding:64px 20px 40px; } }
+</style>
+
+<div class="lcx-page">
+  <section class="lcx-hero">
+    <h1>This is your blank canvas</h1>
+    <p>Edit this HTML directly. Delete it, replace it, paste your own. The theme renders exactly what you put here, full width, with nothing in the way.</p>
+    <a class="lcx-btn" href="#">Primary action</a>
+  </section>
+
+  <section class="lcx-cols">
+    <div class="lcx-card">
+      <h3>Paste and publish</h3>
+      <p>Drop raw HTML and CSS into a Custom HTML block. No builder, no shortcodes, no wrappers fighting your layout.</p>
+    </div>
+    <div class="lcx-card">
+      <h3>Global header and footer</h3>
+      <p>Set them once under Appearance, Loupely Canvas. They wrap every page automatically.</p>
+    </div>
+    <div class="lcx-card">
+      <h3>Find inside any box</h3>
+      <p>Press Ctrl+F or Cmd+F inside any HTML box to find and replace, the thing the editor never let you do.</p>
+    </div>
+  </section>
+</div>

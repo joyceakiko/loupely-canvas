@@ -110,15 +110,31 @@ html:has(body.appearance_page_lc-header-footer-html) {
     background: rgba(122, 158, 135, 0.10);
 }
 
-/* ---- Sage checkboxes ---- */
+/* ---- Sage checkboxes ----
+   WordPress admin sets appearance:none on checkboxes and draws its own blue
+   checkmark, which ignores accent-color. Restore native rendering, then tint
+   it sage. */
 
 .lc-canvas-settings input[type="checkbox"] {
+    -webkit-appearance: auto;
+    appearance: auto;
     accent-color: #7a9e87;
+    background: initial;
+    border: initial;
+    box-shadow: none;
+    width: auto;
+    height: auto;
+    min-width: 0;
+}
+
+.lc-canvas-settings input[type="checkbox"]::before {
+    content: none;
 }
 
 .lc-canvas-settings input[type="checkbox"]:focus {
-    box-shadow: 0 0 0 2px rgba(122, 158, 135, 0.6);
-    border-color: #5c7f68;
+    outline: 2px solid #7a9e87;
+    outline-offset: 1px;
+    box-shadow: none;
 }
 
 /* ---- Anchor offset so a jumped-to section clears the sticky bar ---- */

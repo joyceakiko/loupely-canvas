@@ -17,7 +17,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'LC_VERSION', '2.6.0' );
+define( 'LC_VERSION', '2.7.0' );
 
 
 // ===========================================================
@@ -28,6 +28,7 @@ function lc_theme_setup() {
     load_theme_textdomain( 'loupely-canvas', get_template_directory() . '/languages' );
 
     add_theme_support( 'title-tag' );
+    add_theme_support( 'automatic-feed-links' );
     add_theme_support( 'post-thumbnails' );
     add_theme_support( 'html5', [
         'search-form', 'comment-form', 'comment-list', 'gallery', 'caption', 'style', 'script',

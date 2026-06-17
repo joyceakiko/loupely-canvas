@@ -3,7 +3,7 @@ Contributors: loupely
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 2.2.11
+Stable tag: 2.6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: one-column, full-width-template, translation-ready, custom-colors, editor-style
@@ -20,6 +20,7 @@ What it does:
 * Lets you set a global header and footer once, applied to every page.
 * Injects head code (analytics, fonts, favicons, meta tags) and body end code (chat widgets, late scripts) site wide, without editing theme files.
 * Lets any single page override the header and footer, or hide them entirely.
+* Renders posts, archives, and search through your own markup, using simple tokens, so the blog stays as passthrough as your pages.
 * Adds a find and replace bar to every HTML box. Press Ctrl+F or Cmd+F inside a box to search its contents, the thing the editor never let you do. It supports case sensitivity, whole word, and regular expressions.
 * Ships an optional one click example header, footer, and page so you are not staring at a blank box.
 
@@ -51,6 +52,30 @@ From Appearance, Loupely Canvas. A single page can override them under the Heade
 This full edition is distributed through GitHub and loupelycanvas.com. It includes a built in update checker that watches the project's GitHub releases, so update notices appear in wp-admin and you can update in one click. The Loupely Canvas Lite edition on WordPress.org updates through the directory instead.
 
 == Changelog ==
+
+= 2.6.0 =
+* The editor preview now reflects your design. The CSS and fonts from your Head code box load into the block editor and the Custom HTML block preview, so it looks like the front end instead of plain markup.
+* Added an Editor preview styling toggle in Theme Settings, on by default, to turn that behavior off if your head CSS interferes with the editor.
+
+= 2.5.0 =
+* The find and replace bar is now a light panel matching the Pro editor, white with a sage focus ring and a sage active state, instead of the dark bar.
+* Added a setting to turn the find and replace bar on or off across every editor.
+* Renamed the Editor menus section to Theme Settings, now holding both the find and replace toggle and the editor menus toggle, with a matching Theme Settings button on the sticky nav.
+
+= 2.4.1 =
+* Recolored the find and replace bar and its match highlights to the Canvas sage and forest ink palette, replacing the off-brand blue accent.
+
+= 2.4.0 =
+* Added a sticky section nav to the settings screen that follows as you scroll, with jump links to each section and a Save button always in reach.
+* Recolored the settings screen buttons and checkboxes to the Canvas sage palette.
+* The sticky nav highlights the section you are currently viewing.
+
+= 2.3.0 =
+* Added blog support that stays passthrough: posts, archives, and search now render through your own markup instead of bare post bodies.
+* New Blog templates section on the settings screen: Post card, Single post, Archive header, and 404 boxes, each accepting raw HTML with simple tokens ({title}, {permalink}, {date}, {content}, {excerpt}, {thumbnail}, {categories}, and more).
+* The page you assign as the Posts page under Settings, Reading now renders its content above the post list, so a pasted intro or hero shows instead of being discarded.
+* Added home.php, single.php, archive.php, search.php, and 404.php. A missing URL now shows a real 404 instead of a blank page.
+* Empty template boxes fall back to a minimal default so a fresh install is never blank, with no imposed styling to undo.
 
 = 2.2.11 =
 * Settings screen panel: removed the audience descriptor from the Pro text, leaving the feature list to speak for itself.

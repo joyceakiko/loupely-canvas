@@ -18,7 +18,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 
 function lc_register_settings() {
-    $fields = [ 'lc_header_html', 'lc_footer_html', 'lc_head_html', 'lc_body_end_html' ];
+    $fields = [
+        'lc_header_html', 'lc_footer_html', 'lc_head_html', 'lc_body_end_html',
+        'lc_post_card_html', 'lc_single_post_html', 'lc_archive_header_html', 'lc_error_404_html',
+    ];
     foreach ( $fields as $field ) {
         register_setting( 'lc_html_settings', $field, [
             'type'              => 'string',
@@ -31,6 +34,18 @@ function lc_register_settings() {
         'type'              => 'boolean',
         'sanitize_callback' => 'lc_sanitize_checkbox',
         'default'           => '',
+    ] );
+
+    register_setting( 'lc_html_settings', 'lc_enable_find_replace', [
+        'type'              => 'boolean',
+        'sanitize_callback' => 'lc_sanitize_checkbox',
+        'default'           => '1',
+    ] );
+
+    register_setting( 'lc_html_settings', 'lc_editor_preview', [
+        'type'              => 'boolean',
+        'sanitize_callback' => 'lc_sanitize_checkbox',
+        'default'           => '1',
     ] );
 }
 add_action( 'admin_init', 'lc_register_settings' );
@@ -73,8 +88,41 @@ function lc_add_settings_page() {
 add_action( 'admin_menu', 'lc_add_settings_page' );
 
 
-function lc_render_box( string $name, string $label, string $help ) {
-    printf( '<h2 style="margin-top:28px;">%s</h2>', esc_html( $label ) );
+/**
+ * Load the settings screen styles (sticky section nav, sage buttons and
+ * checkboxes) and the scroll-spy script, only on our own settings page.
+ */
+function lc_enqueue_settings_assets( $hook ) {
+    if ( $hook !== 'appearance_page_lc-header-footer-html' ) {
+        return;
+    }
+
+    $css_rel = '/assets/admin-settings.css';
+    $js_rel  = '/assets/settings-nav.js';
+    $css_abs = get_template_directory() . $css_rel;
+    $js_abs  = get_template_directory() . $js_rel;
+
+    wp_enqueue_style(
+        'lc-admin-settings',
+        get_template_directory_uri() . $css_rel,
+        [],
+        file_exists( $css_abs ) ? (string) filemtime( $css_abs ) : LC_VERSION
+    );
+
+    wp_enqueue_script(
+        'lc-settings-nav',
+        get_template_directory_uri() . $js_rel,
+        [],
+        file_exists( $js_abs ) ? (string) filemtime( $js_abs ) : LC_VERSION,
+        true
+    );
+}
+add_action( 'admin_enqueue_scripts', 'lc_enqueue_settings_assets' );
+
+
+function lc_render_box( string $name, string $label, string $help, string $id = '' ) {
+    $attr = $id !== '' ? sprintf( ' id="%s" class="lc-section"', esc_attr( $id ) ) : '';
+    printf( '<h2%1$s style="margin-top:28px;">%2$s</h2>', $attr, esc_html( $label ) );
     printf( '<p style="max-width:680px;color:#50575e;margin-top:0;">%s</p>', esc_html( $help ) );
     printf(
         '<textarea name="%1$s" class="lc-html-field" rows="12" spellcheck="false" aria-label="%2$s" style="width:100%%;font-family:Menlo,Consolas,monospace;font-size:13px;line-height:1.5;">%3$s</textarea>',
@@ -90,7 +138,7 @@ function lc_render_settings_page() {
         return;
     }
     ?>
-    <div class="wrap">
+    <div class="wrap lc-canvas-settings">
         <h1><?php echo esc_html__( 'Loupely Canvas', 'loupely-canvas' ); ?></h1>
 
         <?php settings_errors( 'lc_html_settings' ); ?>
@@ -114,30 +162,103 @@ function lc_render_settings_page() {
         <form method="post" action="options.php">
             <?php settings_fields( 'lc_html_settings' ); ?>
 
+            <nav class="lc-settings-nav" aria-label="<?php echo esc_attr__( 'Jump to a settings section', 'loupely-canvas' ); ?>">
+                <span class="lc-nav-label">&lt;jump-to&gt;</span>
+                <a href="#lc-sec-header"><?php echo esc_html__( 'Header', 'loupely-canvas' ); ?></a>
+                <a href="#lc-sec-footer"><?php echo esc_html__( 'Footer', 'loupely-canvas' ); ?></a>
+                <a href="#lc-sec-head"><?php echo esc_html__( 'Head code', 'loupely-canvas' ); ?></a>
+                <a href="#lc-sec-body"><?php echo esc_html__( 'Body end', 'loupely-canvas' ); ?></a>
+                <a href="#lc-sec-blog"><?php echo esc_html__( 'Blog templates', 'loupely-canvas' ); ?></a>
+                <a href="#lc-sec-theme-settings"><?php echo esc_html__( 'Theme Settings', 'loupely-canvas' ); ?></a>
+                <span class="lc-nav-save">
+                    <?php submit_button( __( 'Save changes', 'loupely-canvas' ), 'primary', 'submit', false ); ?>
+                </span>
+            </nav>
+
             <?php
             lc_render_box(
                 'lc_header_html',
                 __( 'Header HTML', 'loupely-canvas' ),
-                __( 'Printed at the top of every page, before your page content.', 'loupely-canvas' )
+                __( 'Printed at the top of every page, before your page content.', 'loupely-canvas' ),
+                'lc-sec-header'
             );
             lc_render_box(
                 'lc_footer_html',
                 __( 'Footer HTML', 'loupely-canvas' ),
-                __( 'Printed at the bottom of every page, after your page content.', 'loupely-canvas' )
+                __( 'Printed at the bottom of every page, after your page content.', 'loupely-canvas' ),
+                'lc-sec-footer'
             );
             lc_render_box(
                 'lc_head_html',
                 __( 'Head code', 'loupely-canvas' ),
-                __( 'Printed inside the document head. Use for analytics, fonts, favicons, verification and meta tags.', 'loupely-canvas' )
+                __( 'Printed inside the document head. Use for analytics, fonts, favicons, verification and meta tags.', 'loupely-canvas' ),
+                'lc-sec-head'
             );
             lc_render_box(
                 'lc_body_end_html',
                 __( 'Body end code', 'loupely-canvas' ),
-                __( 'Printed just before the closing body tag. Use for chat widgets and scripts that should load last.', 'loupely-canvas' )
+                __( 'Printed just before the closing body tag. Use for chat widgets and scripts that should load last.', 'loupely-canvas' ),
+                'lc-sec-body'
             );
             ?>
 
-            <h2 style="margin-top:28px;"><?php echo esc_html__( 'Editor menus', 'loupely-canvas' ); ?></h2>
+            <h2 id="lc-sec-blog" class="lc-section" style="margin-top:40px;border-top:1px solid #dcdcde;padding-top:28px;"><?php echo esc_html__( 'Blog templates', 'loupely-canvas' ); ?></h2>
+            <p style="max-width:720px;color:#50575e;">
+                <?php echo esc_html__( 'Posts render through a loop, not a single Custom HTML block, so they use these boxes instead of page content. Paste your own markup and the theme fills in the values. Leave a box empty to use a minimal default you can replace any time.', 'loupely-canvas' ); ?>
+            </p>
+            <p style="max-width:720px;color:#50575e;">
+                <?php echo esc_html__( 'Per post tokens (post card and single post): {title} {permalink} {date} {content} {excerpt} {thumbnail} {thumbnail_url} {author} {categories} {tags}. Archive header tokens: {archive_title} {archive_description}. The 404 box accepts {home_url}.', 'loupely-canvas' ); ?>
+            </p>
+            <p style="max-width:720px;color:#50575e;">
+                <?php echo esc_html__( 'To use a page as your blog, set it under Settings, Reading as the Posts page. Anything you paste onto that page renders above the post list, so it can hold your blog intro or hero.', 'loupely-canvas' ); ?>
+            </p>
+
+            <?php
+            lc_render_box(
+                'lc_post_card_html',
+                __( 'Post card', 'loupely-canvas' ),
+                __( 'Repeated for each post in the blog index and archive lists.', 'loupely-canvas' )
+            );
+            lc_render_box(
+                'lc_single_post_html',
+                __( 'Single post', 'loupely-canvas' ),
+                __( 'The full view of one post. Use {content} here for the post body.', 'loupely-canvas' )
+            );
+            lc_render_box(
+                'lc_archive_header_html',
+                __( 'Archive header', 'loupely-canvas' ),
+                __( 'Optional. Printed above archive and search lists. Empty falls back to a single heading on real archives, and to nothing on the blog index.', 'loupely-canvas' )
+            );
+            lc_render_box(
+                'lc_error_404_html',
+                __( '404 page', 'loupely-canvas' ),
+                __( 'Shown when a URL is not found. Empty falls back to a short message with a link home.', 'loupely-canvas' )
+            );
+            ?>
+
+            <h2 id="lc-sec-theme-settings" class="lc-section" style="margin-top:28px;"><?php echo esc_html__( 'Theme Settings', 'loupely-canvas' ); ?></h2>
+
+            <h3 style="margin-bottom:6px;"><?php echo esc_html__( 'Find and replace bar', 'loupely-canvas' ); ?></h3>
+            <p style="max-width:680px;color:#50575e;margin-top:0;">
+                <?php echo esc_html__( 'Adds a Ctrl+F or Cmd+F find and replace bar inside the HTML boxes, the block editor, and these settings boxes. Turn it off to remove it from every editor.', 'loupely-canvas' ); ?>
+            </p>
+            <input type="hidden" name="lc_enable_find_replace" value="0">
+            <label>
+                <input type="checkbox" name="lc_enable_find_replace" value="1" <?php checked( get_option( 'lc_enable_find_replace', '1' ), '1' ); ?>>
+                <?php echo esc_html__( 'Show the find and replace bar in the editor', 'loupely-canvas' ); ?>
+            </label>
+
+            <h3 style="margin-bottom:6px;margin-top:22px;"><?php echo esc_html__( 'Editor preview styling', 'loupely-canvas' ); ?></h3>
+            <p style="max-width:680px;color:#50575e;margin-top:0;">
+                <?php echo esc_html__( 'Loads the CSS and fonts from your Head code box into the editor, so the Custom HTML block preview looks like the front end instead of plain. Scripts are not run in the preview, so anything that depends on JavaScript shows its pre-script state.', 'loupely-canvas' ); ?>
+            </p>
+            <input type="hidden" name="lc_editor_preview" value="0">
+            <label>
+                <input type="checkbox" name="lc_editor_preview" value="1" <?php checked( get_option( 'lc_editor_preview', '1' ), '1' ); ?>>
+                <?php echo esc_html__( 'Show my Head code design in the editor preview', 'loupely-canvas' ); ?>
+            </label>
+
+            <h3 style="margin-bottom:6px;margin-top:22px;"><?php echo esc_html__( 'Editor menus', 'loupely-canvas' ); ?></h3>
             <p style="max-width:680px;color:#50575e;margin-top:0;">
                 <?php echo esc_html__( 'This is a classic theme and does not use the block Patterns or Fonts screens. You can hide them from the Appearance menu to keep things tidy. This only hides the menu links and changes nothing on your live site.', 'loupely-canvas' ); ?>
             </p>

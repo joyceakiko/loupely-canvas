@@ -1,0 +1,138 @@
+/**
+ * Loupely Canvas - settings screen
+ *
+ * Scoped to the Appearance, Loupely Canvas page (.lc-canvas-settings).
+ * Adds a sticky section nav modeled on the Pro page editor sticky tools bar,
+ * and recolors the screen's buttons and checkboxes to the Canvas sage system.
+ *
+ * Sage:      #7A9E87   Sage Deep: #5C7F68   Canvas tint: #F5F7F5
+ * Canvas Rule: #D5DED6   Ink: #1A2420   Ink Muted: #7A9087
+ */
+
+/* Smooth jump when a nav link is clicked, scoped to this screen only. */
+html:has(body.appearance_page_lc-header-footer-html) {
+    scroll-behavior: smooth;
+}
+
+/* ---- Sticky section nav (mimics the Pro editor sticky tools bar) ---- */
+
+.lc-canvas-settings .lc-settings-nav {
+    position: sticky;
+    top: 42px; /* clears the 32px admin bar with a little breathing room */
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 18px 0 8px;
+    padding: 7px 10px;
+    background: rgba(245, 247, 245, 0.94);
+    -webkit-backdrop-filter: saturate(1.1) blur(4px);
+    backdrop-filter: saturate(1.1) blur(4px);
+    border: 1px solid #d5ded6;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(26, 36, 32, 0.12);
+}
+
+.lc-canvas-settings .lc-settings-nav .lc-nav-label {
+    font: 12px/1.4 Menlo, Consolas, monospace;
+    color: #7a9087;
+    margin-right: 4px;
+    white-space: nowrap;
+}
+
+.lc-canvas-settings .lc-settings-nav a {
+    font: 12px/1.4 Menlo, Consolas, monospace;
+    color: #5c7f68;
+    text-decoration: none;
+    padding: 4px 9px;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+}
+
+.lc-canvas-settings .lc-settings-nav a:hover,
+.lc-canvas-settings .lc-settings-nav a:focus {
+    border-color: #7a9e87;
+    background: rgba(122, 158, 135, 0.10);
+    color: #1a2420;
+    outline: none;
+}
+
+.lc-canvas-settings .lc-settings-nav a.is-active {
+    background: #7a9e87;
+    border-color: #5c7f68;
+    color: #fff;
+}
+
+.lc-canvas-settings .lc-settings-nav .lc-nav-save {
+    margin-left: auto;
+    display: inline-flex;
+}
+
+.lc-canvas-settings .lc-settings-nav .lc-nav-save .button {
+    margin: 0;
+}
+
+/* ---- Sage buttons ---- */
+
+.lc-canvas-settings .button-primary {
+    background: #7a9e87;
+    border-color: #5c7f68;
+    color: #fff;
+    text-shadow: none;
+    box-shadow: none;
+}
+
+.lc-canvas-settings .button-primary:hover,
+.lc-canvas-settings .button-primary:focus,
+.lc-canvas-settings .button-primary:active {
+    background: #5c7f68;
+    border-color: #5c7f68;
+    color: #fff;
+}
+
+.lc-canvas-settings .button-primary:focus {
+    box-shadow: 0 0 0 2px #7a9e87;
+}
+
+/* Secondary buttons (for example Create starter content): sage outline. */
+.lc-canvas-settings .button-secondary {
+    color: #5c7f68;
+    border-color: #7a9e87;
+    background: #fff;
+}
+
+.lc-canvas-settings .button-secondary:hover,
+.lc-canvas-settings .button-secondary:focus {
+    color: #1a2420;
+    border-color: #5c7f68;
+    background: rgba(122, 158, 135, 0.10);
+}
+
+/* ---- Sage checkboxes ---- */
+
+.lc-canvas-settings input[type="checkbox"] {
+    accent-color: #7a9e87;
+}
+
+.lc-canvas-settings input[type="checkbox"]:focus {
+    box-shadow: 0 0 0 2px rgba(122, 158, 135, 0.6);
+    border-color: #5c7f68;
+}
+
+/* ---- Anchor offset so a jumped-to section clears the sticky bar ---- */
+
+.lc-canvas-settings .lc-section {
+    scroll-margin-top: 96px;
+}
+
+/* Taller admin bar on small screens (46px) needs more offset. */
+@media screen and (max-width: 782px) {
+    .lc-canvas-settings .lc-settings-nav {
+        top: 56px;
+    }
+    .lc-canvas-settings .lc-section {
+        scroll-margin-top: 112px;
+    }
+}

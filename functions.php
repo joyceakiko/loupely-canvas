@@ -5,6 +5,8 @@
  * Loader and theme setup. The feature code lives in /inc:
  *   inc/settings-page.php  Appearance settings: header, footer, head and body code
  *   inc/render.php         Outputs header, footer, head and body code with per page logic
+ *   inc/post-templates.php Blog passthrough: post card, single post, archive, search and 404
+ *   inc/editor-preview.php Carries the Head code design into the editor preview
  *   inc/page-meta.php      Per page header and footer override controls
  *   inc/starter-content.php  One click example header, footer and page
  *   inc/editor-tools.php   Loads the find and replace tool in the editor and settings
@@ -15,7 +17,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'LC_VERSION', '2.2.11' );
+define( 'LC_VERSION', '2.6.0' );
 
 
 // ===========================================================
@@ -76,6 +78,8 @@ add_action( 'init', 'lc_remove_block_inline_styles' );
 // ===========================================================
 
 require get_template_directory() . '/inc/render.php';
+require get_template_directory() . '/inc/post-templates.php';
+require get_template_directory() . '/inc/editor-preview.php';
 require get_template_directory() . '/inc/settings-page.php';
 require get_template_directory() . '/inc/page-meta.php';
 require get_template_directory() . '/inc/starter-content.php';

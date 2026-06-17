@@ -11,6 +11,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 
 function lc_register_find_replace_script() {
+    if ( get_option( 'lc_enable_find_replace', '1' ) !== '1' ) {
+        return;
+    }
+
     $rel = '/assets/find-replace.js';
     $abs = get_template_directory() . $rel;
     $ver = file_exists( $abs ) ? (string) filemtime( $abs ) : LC_VERSION;

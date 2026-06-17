@@ -3,7 +3,7 @@ Contributors: loupely
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 2.7.0
+Stable tag: 2.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: one-column, full-width-template, translation-ready, custom-colors, editor-style
@@ -52,6 +52,9 @@ From Appearance, Loupely Canvas. A single page can override them under the Heade
 This full edition is distributed through GitHub and loupelycanvas.com. It includes a built in update checker that watches the project's GitHub releases, so update notices appear in wp-admin and you can update in one click. The Loupely Canvas Lite edition on WordPress.org updates through the directory instead.
 
 == Changelog ==
+
+= 2.7.1 =
+* Single posts split with the Page Break block now show within-post page links, matching the Lite theme. Single-page posts are unaffected.
 
 = 2.7.0 =
 * Blog templates settings rewritten to be clear: a plain explanation of how pages and posts differ, what Post card, Single post, and Archive header each mean, and a built in token reference that explains every token and where to use it.

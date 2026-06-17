@@ -16,6 +16,13 @@ if ( have_posts() ) :
         the_post();
         lc_render_single_post();
 
+        // Within-post page links, for a post split with the Page Break block.
+        // Outputs nothing for a single-page post. Style via .lc-page-links.
+        wp_link_pages( [
+            'before' => '<nav class="lc-page-links" aria-label="' . esc_attr__( 'Post page links', 'loupely-canvas' ) . '">',
+            'after'  => '</nav>',
+        ] );
+
         the_post_navigation( [
             'prev_text' => '%title',
             'next_text' => '%title',

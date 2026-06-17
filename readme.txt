@@ -1,9 +1,9 @@
 === Loupely Canvas ===
 Contributors: loupely
 Requires at least: 6.0
-Tested up to: 6.7
+Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 2.2.9
+Stable tag: 2.2.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: one-column, full-width-template, translation-ready, custom-colors, editor-style
@@ -51,6 +51,16 @@ From Appearance, Loupely Canvas. A single page can override them under the Heade
 This full edition is distributed through GitHub and loupelycanvas.com. It includes a built in update checker that watches the project's GitHub releases, so update notices appear in wp-admin and you can update in one click. The Loupely Canvas Lite edition on WordPress.org updates through the directory instead.
 
 == Changelog ==
+
+= 2.2.11 =
+* Settings screen panel: removed the audience descriptor from the Pro text, leaving the feature list to speak for itself.
+* Settings screen panel: switched the section label to the Canvas tag marker style, replacing the old uppercase eyebrow.
+* Moved the per page override toggle script out of inline PHP into an enqueued assets file.
+* Tested up to WordPress 7.0.
+
+= 2.2.10 =
+* Settings screen panel: described what Loupely Canvas Pro adds (a full page code editor with syntax coloring and error finding, snippets and templates, multiple header and footer sets, version history, and more), with a link to the Pro page.
+* Settings screen panel: now hidden automatically when Loupely Canvas Pro is active, so it no longer points to an upgrade you already have.
 
 = 2.2.9 =
 * Added a Starter Kit panel at the top of the settings screen, linking to the free kit at loupelycanvas.com/starter-kit. Admin only, nothing is added to the front end.

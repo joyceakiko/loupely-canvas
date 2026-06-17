@@ -15,7 +15,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'LC_VERSION', '2.2.9' );
+define( 'LC_VERSION', '2.2.11' );
 
 
 // ===========================================================

@@ -68,19 +68,8 @@ function lc_render_meta_box( $post ) {
         esc_textarea( $f_custom )
     );
 
-    // Tiny toggle script: show the custom box only when custom is selected.
-    ?>
-    <script>
-    (function(){
-      document.querySelectorAll('#lc_header_footer select[data-lc-target]').forEach(function(sel){
-        sel.addEventListener('change', function(){
-          var wrap = document.getElementById(sel.getAttribute('data-lc-target'));
-          if (wrap) wrap.style.display = (sel.value === 'custom') ? '' : 'none';
-        });
-      });
-    })();
-    </script>
-    <?php
+    // The show/hide toggle for the custom boxes is in assets/page-meta.js,
+    // enqueued on the post editor screens by lc_page_meta_assets().
 }
 
 
@@ -114,3 +103,19 @@ function lc_save_meta( $post_id ) {
     }
 }
 add_action( 'save_post', 'lc_save_meta' );
+
+
+/**
+ * Load the small toggle script on the post and page editor screens, where the
+ * override meta box appears. Behavior lives in assets/page-meta.js, not inline.
+ */
+function lc_page_meta_assets( $hook ) {
+    if ( ! in_array( $hook, [ 'post.php', 'post-new.php' ], true ) ) {
+        return;
+    }
+    $rel = '/assets/page-meta.js';
+    $abs = get_template_directory() . $rel;
+    $ver = file_exists( $abs ) ? (string) filemtime( $abs ) : LC_VERSION;
+    wp_enqueue_script( 'lc-page-meta', get_template_directory_uri() . $rel, [], $ver, true );
+}
+add_action( 'admin_enqueue_scripts', 'lc_page_meta_assets' );

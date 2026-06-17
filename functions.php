@@ -10,6 +10,7 @@
  *   inc/page-meta.php      Per page header and footer override controls
  *   inc/starter-content.php  One click example header, footer and page
  *   inc/editor-tools.php   Loads the find and replace tool in the editor and settings
+ *   inc/migrate-from-lite.php  One click import of a Lite header, footer and starter blog
  *
  * The theme stays out of the way on the front end. Everything visible comes
  * from the HTML you paste. No injected block styles, no container widths.
@@ -17,7 +18,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'LC_VERSION', '2.7.1' );
+define( 'LC_VERSION', '2.8.0' );
 
 
 // ===========================================================
@@ -87,3 +88,4 @@ require get_template_directory() . '/inc/starter-content.php';
 require get_template_directory() . '/inc/editor-tools.php';
 require get_template_directory() . '/inc/updater.php';
 require get_template_directory() . '/inc/pro-panel.php';
+require get_template_directory() . '/inc/migrate-from-lite.php';

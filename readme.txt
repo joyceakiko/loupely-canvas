@@ -3,7 +3,7 @@ Contributors: loupely
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 2.7.1
+Stable tag: 2.8.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: one-column, full-width-template, translation-ready, custom-colors, editor-style
@@ -52,6 +52,10 @@ From Appearance, Loupely Canvas. A single page can override them under the Heade
 This full edition is distributed through GitHub and loupelycanvas.com. It includes a built in update checker that watches the project's GitHub releases, so update notices appear in wp-admin and you can update in one click. The Loupely Canvas Lite edition on WordPress.org updates through the directory instead.
 
 == Changelog ==
+
+= 2.8.0 =
+* Coming from Loupely Canvas Lite is easier. The full theme now finds the header and footer you saved in Lite and offers a one click import on the Themes screen and the Loupely Canvas settings screen. Your posts and pages already carry over on their own.
+* New "Load a starter blog layout" button in the Blog templates section fills the Post card and Single post boxes with editable example markup, so your blog has a structure to build on instead of the bare default. Both actions only ever fill empty boxes, so nothing you already set is touched.
 
 = 2.7.1 =
 * Single posts split with the Page Break block now show within-post page links, matching the Lite theme. Single-page posts are unaffected.

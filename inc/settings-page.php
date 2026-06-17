@@ -258,6 +258,12 @@ function lc_render_settings_page() {
             </details>
 
             <?php
+            if ( function_exists( 'lc_render_blog_starter_button' ) ) {
+                lc_render_blog_starter_button();
+            }
+            ?>
+
+            <?php
             lc_render_box(
                 'lc_post_card_html',
                 __( 'Post card', 'loupely-canvas' ),

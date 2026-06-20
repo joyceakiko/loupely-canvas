@@ -3,7 +3,7 @@ Contributors: loupely
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 2.12.0
+Stable tag: 2.16.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: one-column, full-width-template, translation-ready, custom-colors, editor-style
@@ -53,6 +53,21 @@ From Appearance, Loupely Canvas. A single page can override them under the Heade
 This full edition is distributed through GitHub and loupelycanvas.com. It includes a built in update checker that watches the project's GitHub releases, so update notices appear in wp-admin and you can update in one click. The Loupely Canvas Lite edition on WordPress.org updates through the directory instead.
 
 == Changelog ==
+
+= 2.16.2 =
+* Removed the Reset link from the sticky section nav on the settings screen. The reset and wipe panel still sits at the foot of the screen under the theme settings.
+
+= 2.16.1 =
+* The wipe confirmation dialog now reminds you to back up your Canvas Pro data before deleting it. When Pro is active, the reminder links straight to its export screen, opening in a new tab. When Pro is not active and you are clearing leftover Pro data, the reminder explains that the export tool is unavailable until Pro is turned back on. The reminder shows only when the selection includes Pro data.
+
+= 2.16.0 =
+* The Wipe content panel now offers to remove leftover Canvas Pro data. When Pro is not active but data it created is still in the database (snippets, header and footer sets, templates, injections, Pro settings, and version history), a Leftover Canvas Pro data option appears so you can clear it. It shows only when such data is actually present, and never while Pro is active.
+
+= 2.15.0 =
+* The Wipe content action is now a set of checkboxes, so you pick exactly what to delete before running it: pages, posts, media, and the theme settings. Media is its own choice, off unless you tick it. When Canvas Pro is active, a second group adds its content: snippets, header and footer sets, templates, injections, and Pro settings and version history. The Pro group shows only while Pro is active. The button stays off until you tick something, and the confirmation dialog lists what you picked before you type the word.
+
+= 2.14.0 =
+* Added a Reset and wipe panel at the foot of the Appearance, Loupely Canvas screen, administrator only. Reset theme settings empties the header, footer, head and body code, blog templates, and toggles, leaving pages, posts, and media alone. Wipe all content also deletes every page and post and any Canvas Pro snippets, header and footer sets, templates, injections, Pro settings, and version history, whether or not Pro is active, and leaves media and menus alone. Each action asks you to type a confirmation word in a dialog first, and the word is checked again on the server.
 
 = 2.13.0 =
 * Switching from Loupely Canvas Lite now carries your header, footer, and per page hide title, full width, and body class settings into the full theme. Lite stores these under its own keys, so before this they read blank after switching. The carry over runs once on activation and never overwrites a setting you have already made in the full theme.

@@ -11,6 +11,7 @@
  *   inc/editor-preview.php Carries the Head code design into the editor preview
  *   inc/page-meta.php      Per page settings: header and footer override, title, code, more
  *   inc/starter-content.php  One click example header, footer and page
+ *   inc/reset-content.php  Reset the theme settings, or wipe all content, with a typed confirmation
  *   inc/editor-tools.php   Loads the find and replace tool in the editor and settings
  *   inc/lite-migration.php Carries Lite settings over when the full theme is activated
  *
@@ -20,7 +21,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'LC_VERSION', '2.12.0' );
+define( 'LC_VERSION', '2.16.2' );
 
 
 // ===========================================================
@@ -125,6 +126,7 @@ require get_template_directory() . '/inc/settings-page.php';
 require get_template_directory() . '/inc/site-basics.php';
 require get_template_directory() . '/inc/page-meta.php';
 require get_template_directory() . '/inc/starter-content.php';
+require get_template_directory() . '/inc/reset-content.php';
 require get_template_directory() . '/inc/editor-tools.php';
 require get_template_directory() . '/inc/updater.php';
 require get_template_directory() . '/inc/pro-panel.php';

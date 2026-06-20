@@ -337,6 +337,8 @@ function lc_render_settings_page() {
 
             <?php submit_button( __( 'Save changes', 'loupely-canvas' ) ); ?>
         </form>
+
+        <?php do_action( 'lc_settings_bottom' ); ?>
     </div>
     <?php
 }

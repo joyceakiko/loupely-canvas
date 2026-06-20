@@ -3,7 +3,7 @@ Contributors: loupely
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 2.17.0
+Stable tag: 2.19.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: one-column, full-width-template, translation-ready, custom-colors, editor-style
@@ -53,6 +53,18 @@ From Appearance, Loupely Canvas. A single page can override them under the Heade
 This full edition is distributed through GitHub and loupelycanvas.com. It includes a built in update checker that watches the project's GitHub releases, so update notices appear in wp-admin and you can update in one click. The Loupely Canvas Lite edition on WordPress.org updates through the directory instead.
 
 == Changelog ==
+
+= 2.19.1 =
+* Wipe content has a single Custom post types checkbox in the Canvas Pro group. Checking it and running the wipe deletes every item of every Canvas Pro custom post type at once. The type definitions stay until you also wipe Pro settings.
+
+= 2.19.0 =
+* Wipe content now lists your Canvas Pro custom post types. Each type gets its own checkbox in the Canvas Pro group, so you can wipe a single type's items, the way you already can for snippets, templates, and the rest. When Canvas Pro is gone but its data remains, the leftover-data cleanup removes custom post type items too.
+
+= 2.18.1 =
+* Fix a fatal error on the settings screen. The Header and Footer boxes passed their token reference in the old text format after the token list became click to copy, which stopped the settings screen from loading. Both now pass the token list in the new format, and every box on the screen renders again.
+
+= 2.18.0 =
+* The token reference on the settings screen is now click to copy. Click any token, in the reference panel or in the Tokens line under a box, and it copies with a brief confirmation. Keyboard users can focus a token and press Enter or Space.
 
 = 2.17.0 =
 * Add the lc_post_tokens filter to the per-post token map, so a companion plugin can supply additional per-post tokens (such as custom field values) that resolve to the post in the loop. The post card and single post boxes pick these up wherever the token is written. No change to the theme's own tokens or output.

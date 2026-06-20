@@ -13,10 +13,11 @@
  *                          user picks before running it: pages, posts, media,
  *                          and the theme settings. When Canvas Pro is active a
  *                          second group adds the Pro content: snippets, header
- *                          and footer sets, templates, injections, and Pro
- *                          settings and version history. When Pro is not active
- *                          but data it left behind is still in the database, the
- *                          group instead offers to remove that leftover data.
+ *                          and footer sets, templates, injections, all custom
+ *                          post type items, and Pro settings and version
+ *                          history. When Pro is not active but data it left
+ *                          behind is still in the database, the group instead
+ *                          offers to remove that leftover data.
  *
  * Each action runs only after the user types the confirmation word in a dialog,
  * which the confirm script enforces in the browser and the handler verifies
@@ -52,6 +53,42 @@ function lc_reset_pro_post_types(): array {
 		'templates'  => 'lc_template',
 		'injections' => 'lc_injection',
 	];
+}
+
+
+/**
+ * The user's Canvas Pro custom post types, as a map of post type slug to its
+ * plural name. When Pro is active the registered definitions are read through
+ * its own accessor; when Pro is inactive the stored definitions are read from
+ * the option directly, so leftover items can still be listed and removed.
+ *
+ * @return array<string, string>
+ */
+function lc_reset_custom_post_types(): array {
+	$out = [];
+
+	if ( function_exists( 'lc_pro_get_cpts' ) ) {
+		$cpts = lc_pro_get_cpts();
+	} else {
+		$cpts = get_option( 'lc_pro_cpts', [] );
+	}
+
+	if ( ! is_array( $cpts ) ) {
+		return $out;
+	}
+
+	foreach ( $cpts as $slug => $record ) {
+		$slug = sanitize_key( (string) $slug );
+		if ( $slug === '' ) {
+			continue;
+		}
+		$plural = ( is_array( $record ) && isset( $record['plural'] ) && $record['plural'] !== '' )
+			? (string) $record['plural']
+			: $slug;
+		$out[ $slug ] = $plural;
+	}
+
+	return $out;
 }
 
 
@@ -174,16 +211,24 @@ function lc_reset_items(): array {
 				'pro'       => true,
 			];
 		}
+		if ( ! empty( lc_reset_custom_post_types() ) ) {
+			$items['pro_cpts'] = [
+				'label'     => __( 'Custom post types', 'loupely-canvas' ),
+				'note'      => __( 'Every item of every Canvas Pro custom post type, including drafts and trashed items. The type definitions themselves stay until you also wipe Pro settings below.', 'loupely-canvas' ),
+				'post_type' => '',
+				'pro'       => true,
+			];
+		}
 		$items['pro_data'] = [
 			'label'     => __( 'Pro settings and version history', 'loupely-canvas' ),
-			'note'      => __( 'Canvas Pro settings and the saved version history of every item.', 'loupely-canvas' ),
+			'note'      => __( 'Canvas Pro settings, custom post type definitions, and the saved version history of every item.', 'loupely-canvas' ),
 			'post_type' => '',
 			'pro'       => true,
 		];
 	} elseif ( lc_reset_orphaned_pro_exists() ) {
 		$items['pro_orphaned'] = [
 			'label'     => __( 'Remove all leftover Canvas Pro data', 'loupely-canvas' ),
-			'note'      => __( 'Snippets, header and footer sets, templates, injections, Pro settings, and version history left in the database after Canvas Pro was removed.', 'loupely-canvas' ),
+			'note'      => __( 'Snippets, header and footer sets, templates, injections, custom post type items, Pro settings, custom post type definitions, and version history left in the database after Canvas Pro was removed.', 'loupely-canvas' ),
 			'post_type' => '',
 			'pro'       => true,
 		];
@@ -248,6 +293,11 @@ function lc_reset_delete_pro_data() {
 function lc_reset_delete_pro_all() {
 	foreach ( lc_reset_pro_post_types() as $post_type ) {
 		lc_reset_delete_post_type( $post_type );
+	}
+	// Custom post type items, read from the stored definitions before the options
+	// that hold those definitions are cleared below.
+	foreach ( lc_reset_custom_post_types() as $slug => $plural ) {
+		lc_reset_delete_post_type( $slug );
 	}
 	lc_reset_delete_pro_data();
 }
@@ -324,6 +374,10 @@ function lc_handle_reset_everything() {
 			lc_reset_delete_pro_data();
 		} elseif ( $key === 'pro_orphaned' ) {
 			lc_reset_delete_pro_all();
+		} elseif ( $key === 'pro_cpts' ) {
+			foreach ( lc_reset_custom_post_types() as $slug => $plural ) {
+				lc_reset_delete_post_type( $slug );
+			}
 		} elseif ( $items[ $key ]['post_type'] !== '' ) {
 			lc_reset_delete_post_type( $items[ $key ]['post_type'] );
 		}

@@ -707,3 +707,26 @@ html:has(body.appearance_page_lc-header-footer-html) {
     color: #fff;
     cursor: not-allowed;
 }
+
+/* Copyable token chips on the settings screen. */
+.lc-token {
+    display: inline-block;
+    background: #f0f4f1;
+    border: 1px solid #d5ded6;
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-family: Menlo, Consolas, monospace;
+    font-size: 12px;
+    color: #1a2420;
+}
+.lc-token-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 10px;
+}
+.lc-token-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    flex: 0 0 100%;
+}

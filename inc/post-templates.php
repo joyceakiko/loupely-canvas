@@ -18,6 +18,7 @@
  *   {thumbnail} {thumbnail_url} {author} {author_avatar} {author_bio}
  *   {author_url} {categories} {tags} {post_class}
  *   {comment_count} {comments_link}
+ * The lc_post_tokens filter lets a companion plugin add more per-post tokens.
  * Page-level tokens (archive header box):
  *   {archive_title} {archive_description} {search_form}
  * 404 box:
@@ -83,6 +84,13 @@ function lc_apply_post_tokens( string $template ): string {
         '{comment_count}' => esc_html( (string) $comment_count ),
         '{comments_link}' => esc_url( $comments_link ),
     ];
+
+    // Add-ons extend the per-post token map through this filter, which receives
+    // the current post id, so a companion plugin can supply tokens the theme
+    // does not know about (custom field values, for example) that resolve to the
+    // post in the loop. Each added value is the add-on's responsibility to
+    // escape, the same way the theme escapes its own tokens above.
+    $replacements = apply_filters( 'lc_post_tokens', $replacements, $id );
 
     return strtr( $template, $replacements );
 }

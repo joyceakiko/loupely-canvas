@@ -3,7 +3,7 @@ Contributors: loupely
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 2.16.2
+Stable tag: 2.17.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: one-column, full-width-template, translation-ready, custom-colors, editor-style
@@ -53,6 +53,9 @@ From Appearance, Loupely Canvas. A single page can override them under the Heade
 This full edition is distributed through GitHub and loupelycanvas.com. It includes a built in update checker that watches the project's GitHub releases, so update notices appear in wp-admin and you can update in one click. The Loupely Canvas Lite edition on WordPress.org updates through the directory instead.
 
 == Changelog ==
+
+= 2.17.0 =
+* Add the lc_post_tokens filter to the per-post token map, so a companion plugin can supply additional per-post tokens (such as custom field values) that resolve to the post in the loop. The post card and single post boxes pick these up wherever the token is written. No change to the theme's own tokens or output.
 
 = 2.16.2 =
 * Removed the Reset link from the sticky section nav on the settings screen. The reset and wipe panel still sits at the foot of the screen under the theme settings.

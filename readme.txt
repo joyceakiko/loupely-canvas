@@ -54,6 +54,9 @@ This full edition is distributed through GitHub and loupelycanvas.com. It includ
 
 == Changelog ==
 
+= 2.13.0 =
+* Switching from Loupely Canvas Lite now carries your header, footer, and per page hide title, full width, and body class settings into the full theme. Lite stores these under its own keys, so before this they read blank after switching. The carry over runs once on activation and never overwrites a setting you have already made in the full theme.
+
 = 2.12.0 =
 * The per page Header and footer controls can now offer modes beyond the built-in Global, Custom, and None, and the front end honors them. The render falls back to the global header and footer when nothing supplies the added mode, so the theme works the same on its own. Canvas Pro uses this to add a Use a set choice to each control.
 * The Page settings panel can now be mounted by another editor with no change to its markup or save, so the Canvas Pro page editor reaches the same per page settings as the classic editor.

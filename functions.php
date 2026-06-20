@@ -12,6 +12,7 @@
  *   inc/page-meta.php      Per page settings: header and footer override, title, code, more
  *   inc/starter-content.php  One click example header, footer and page
  *   inc/editor-tools.php   Loads the find and replace tool in the editor and settings
+ *   inc/lite-migration.php Carries Lite settings over when the full theme is activated
  *
  * The theme stays out of the way on the front end. Everything visible comes
  * from the HTML you paste. No injected block styles, no container widths.
@@ -127,3 +128,4 @@ require get_template_directory() . '/inc/starter-content.php';
 require get_template_directory() . '/inc/editor-tools.php';
 require get_template_directory() . '/inc/updater.php';
 require get_template_directory() . '/inc/pro-panel.php';
+require get_template_directory() . '/inc/lite-migration.php';

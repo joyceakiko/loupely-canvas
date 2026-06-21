@@ -28,7 +28,12 @@ if ( have_posts() ) :
         the_post();
         lc_render_post_card();
     endwhile;
-    lc_render_pagination();
+    // Only render pagination here when the user has not placed the
+    // {pagination} token in their Post card template, to avoid double output.
+    $lc_card_tpl = trim( (string) get_option( 'lc_post_card_html', '' ) );
+    if ( strpos( $lc_card_tpl, '{pagination}' ) === false ) {
+        lc_render_pagination();
+    }
 endif;
 ?>
 <?php if ( ! $lc_unwrap ) : ?></main><?php endif; ?>

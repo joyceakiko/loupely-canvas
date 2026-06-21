@@ -8,7 +8,14 @@
  * The render module applies these to the header and footer output.
  *
  * Site tokens (header and footer boxes):
- *   {logo} {site_title} {tagline} {home_url} {year}
+ *   {logo}         the custom logo as a linked image
+ *   {site_title}   the site name
+ *   {tagline}      the site tagline
+ *   {home_url}     the homepage URL with trailing slash
+ *   {site_url}     the homepage URL without trailing slash (use in href attributes)
+ *   {year}         the current four-digit year
+ *   {page_title}   the title of the current page or post
+ *   {current_url}  the full URL of the current page (use in href attributes)
  * Menu token:
  *   {menu:header}        the menu assigned to the Header location
  *   {menu:footer}        the menu assigned to the Footer location
@@ -42,6 +49,8 @@ add_action( 'after_setup_theme', 'lc_register_menu_locations' );
 /**
  * Replace the global tokens in a block of header or footer HTML. Site values
  * are escaped individually; the menu token is expanded to a real menu.
+ * Context-aware tokens ({page_title}, {current_url}) resolve to the current
+ * request, so a single header or footer template works across every page.
  */
 function lc_apply_global_tokens( string $html ): string {
     if ( $html === '' ) {
@@ -49,11 +58,14 @@ function lc_apply_global_tokens( string $html ): string {
     }
 
     $html = strtr( $html, [
-        '{logo}'       => get_custom_logo(),
-        '{site_title}' => esc_html( get_bloginfo( 'name' ) ),
-        '{tagline}'    => esc_html( get_bloginfo( 'description' ) ),
-        '{home_url}'   => esc_url( home_url( '/' ) ),
-        '{year}'       => esc_html( (string) wp_date( 'Y' ) ),
+        '{logo}'        => get_custom_logo(),
+        '{site_title}'  => esc_html( get_bloginfo( 'name' ) ),
+        '{tagline}'     => esc_html( get_bloginfo( 'description' ) ),
+        '{home_url}'    => esc_url( home_url( '/' ) ),
+        '{site_url}'    => esc_url( rtrim( home_url(), '/' ) ),
+        '{year}'        => esc_html( (string) wp_date( 'Y' ) ),
+        '{page_title}'  => esc_html( wp_strip_all_tags( get_the_title() ) ),
+        '{current_url}' => esc_url( (string) ( is_ssl() ? 'https' : 'http' ) . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ),
     ] );
 
     if ( strpos( $html, '{menu:' ) !== false ) {

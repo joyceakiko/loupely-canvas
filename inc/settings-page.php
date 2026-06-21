@@ -212,14 +212,14 @@ function lc_render_settings_page() {
                 __( 'Header HTML', 'loupely-canvas' ),
                 __( 'Printed at the top of every page, before your page content. It accepts the tokens below. For {menu:header}, build a menu under Appearance, Menus and assign it to the Header location.', 'loupely-canvas' ),
                 'lc-sec-header',
-                [ '{logo}', '{site_title}', '{tagline}', '{home_url}', '{year}', '{menu:header}', '{menu:your-menu-slug}' ]
+                [ '{logo}', '{site_title}', '{tagline}', '{home_url}', '{site_url}', '{year}', '{page_title}', '{current_url}', '{menu:header}', '{menu:your-menu-slug}' ]
             );
             lc_render_box(
                 'lc_footer_html',
                 __( 'Footer HTML', 'loupely-canvas' ),
                 __( 'Printed at the bottom of every page, after your page content. It accepts the tokens below. For {menu:footer}, build a menu under Appearance, Menus and assign it to the Footer location.', 'loupely-canvas' ),
                 'lc-sec-footer',
-                [ '{logo}', '{site_title}', '{tagline}', '{home_url}', '{year}', '{menu:footer}', '{menu:your-menu-slug}' ]
+                [ '{logo}', '{site_title}', '{tagline}', '{home_url}', '{site_url}', '{year}', '{page_title}', '{current_url}', '{menu:footer}', '{menu:your-menu-slug}' ]
             );
             lc_render_box(
                 'lc_head_html',
@@ -262,8 +262,12 @@ function lc_render_settings_page() {
                         <li><code class="lc-token">{date}</code> <?php echo esc_html__( 'the published date', 'loupely-canvas' ); ?></li>
                         <li><code class="lc-token">{excerpt}</code> <?php echo esc_html__( 'a short summary (best for Post card)', 'loupely-canvas' ); ?></li>
                         <li><code class="lc-token">{content}</code> <?php echo esc_html__( 'the full post body (best for Single post)', 'loupely-canvas' ); ?></li>
-                        <li><code class="lc-token">{thumbnail}</code> <?php echo esc_html__( 'the featured image as a ready img tag', 'loupely-canvas' ); ?></li>
-                        <li><code class="lc-token">{thumbnail_url}</code> <?php echo esc_html__( 'just the featured image URL (use in src or CSS)', 'loupely-canvas' ); ?></li>
+                        <li><code class="lc-token">{thumbnail}</code> <?php echo esc_html__( 'featured image as an img tag at the large size', 'loupely-canvas' ); ?></li>
+                        <li><code class="lc-token">{thumbnail_medium}</code> <?php echo esc_html__( 'featured image at medium size', 'loupely-canvas' ); ?></li>
+                        <li><code class="lc-token">{thumbnail_full}</code> <?php echo esc_html__( 'featured image at full size', 'loupely-canvas' ); ?></li>
+                        <li><code class="lc-token">{thumbnail_url}</code> <?php echo esc_html__( 'featured image URL at large size (use in src or CSS)', 'loupely-canvas' ); ?></li>
+                        <li><code class="lc-token">{thumbnail_medium_url}</code> <?php echo esc_html__( 'featured image URL at medium size', 'loupely-canvas' ); ?></li>
+                        <li><code class="lc-token">{thumbnail_full_url}</code> <?php echo esc_html__( 'featured image URL at full size', 'loupely-canvas' ); ?></li>
                         <li><code class="lc-token">{author}</code> <?php echo esc_html__( 'the author name', 'loupely-canvas' ); ?></li>
                         <li><code class="lc-token">{author_avatar}</code> <?php echo esc_html__( 'the author photo as a ready img tag', 'loupely-canvas' ); ?></li>
                         <li><code class="lc-token">{author_bio}</code> <?php echo esc_html__( 'the author bio from their profile', 'loupely-canvas' ); ?></li>
@@ -273,6 +277,22 @@ function lc_render_settings_page() {
                         <li><code class="lc-token">{post_class}</code> <?php echo esc_html__( 'the post CSS classes (put in a class attribute on your wrapper)', 'loupely-canvas' ); ?></li>
                         <li><code class="lc-token">{comment_count}</code> <?php echo esc_html__( 'the number of comments', 'loupely-canvas' ); ?></li>
                         <li><code class="lc-token">{comments_link}</code> <?php echo esc_html__( 'the link to the comments (use in an href)', 'loupely-canvas' ); ?></li>
+                        <li><code class="lc-token">{pagination}</code> <?php echo esc_html__( 'archive pagination links, for Post card only; empty on a single post', 'loupely-canvas' ); ?></li>
+                        <li><code class="lc-token">{comments}</code> <?php echo esc_html__( 'the full comment thread, for Single post only; empty on card lists', 'loupely-canvas' ); ?></li>
+                    </ul>
+                    <p style="margin:8px 0 4px;font-weight:600;color:#1a2420;"><?php echo esc_html__( 'In Header and Footer:', 'loupely-canvas' ); ?></p>
+                    <ul class="lc-token-list" style="list-style:none;margin:0 0 8px;padding:0;font-size:12px;line-height:2.1;color:#50575e;">
+                        <li><code class="lc-token">{logo}</code> <?php echo esc_html__( 'the custom logo as a linked image', 'loupely-canvas' ); ?></li>
+                        <li><code class="lc-token">{site_title}</code> <?php echo esc_html__( 'the site name', 'loupely-canvas' ); ?></li>
+                        <li><code class="lc-token">{tagline}</code> <?php echo esc_html__( 'the site tagline', 'loupely-canvas' ); ?></li>
+                        <li><code class="lc-token">{home_url}</code> <?php echo esc_html__( 'the homepage URL with trailing slash', 'loupely-canvas' ); ?></li>
+                        <li><code class="lc-token">{site_url}</code> <?php echo esc_html__( 'the homepage URL without trailing slash (use in href attributes)', 'loupely-canvas' ); ?></li>
+                        <li><code class="lc-token">{year}</code> <?php echo esc_html__( 'the current four-digit year', 'loupely-canvas' ); ?></li>
+                        <li><code class="lc-token">{page_title}</code> <?php echo esc_html__( 'the title of the current page or post', 'loupely-canvas' ); ?></li>
+                        <li><code class="lc-token">{current_url}</code> <?php echo esc_html__( 'the full URL of the current page (use in href attributes)', 'loupely-canvas' ); ?></li>
+                        <li><code class="lc-token">{menu:header}</code> <?php echo esc_html__( 'the menu assigned to the Header location', 'loupely-canvas' ); ?></li>
+                        <li><code class="lc-token">{menu:footer}</code> <?php echo esc_html__( 'the menu assigned to the Footer location', 'loupely-canvas' ); ?></li>
+                        <li><code class="lc-token">{menu:your-slug}</code> <?php echo esc_html__( 'any menu by its slug', 'loupely-canvas' ); ?></li>
                     </ul>
                     <p style="margin:8px 0 4px;font-weight:600;color:#1a2420;"><?php echo esc_html__( 'In Archive header:', 'loupely-canvas' ); ?></p>
                     <ul class="lc-token-list" style="list-style:none;margin:0 0 8px;padding:0;font-size:12px;line-height:2.1;color:#50575e;">
@@ -294,14 +314,14 @@ function lc_render_settings_page() {
                 __( 'Post card', 'loupely-canvas' ),
                 __( 'Shown for each post in a list: your blog page and the category, tag, and date archives. Keep it compact, link the title to {permalink}, and use {excerpt} rather than {content}.', 'loupely-canvas' ),
                 'lc-sec-post-card',
-                [ '{title}', '{permalink}', '{date}', '{excerpt}', '{thumbnail}', '{thumbnail_url}', '{author}', '{author_avatar}', '{author_bio}', '{author_url}', '{categories}', '{tags}', '{post_class}', '{comment_count}', '{comments_link}' ]
+                [ '{title}', '{permalink}', '{date}', '{excerpt}', '{thumbnail}', '{thumbnail_medium}', '{thumbnail_full}', '{thumbnail_url}', '{thumbnail_medium_url}', '{thumbnail_full_url}', '{author}', '{author_avatar}', '{author_bio}', '{author_url}', '{categories}', '{tags}', '{post_class}', '{comment_count}', '{comments_link}', '{pagination}' ]
             );
             lc_render_box(
                 'lc_single_post_html',
                 __( 'Single post', 'loupely-canvas' ),
                 __( 'Shown when someone opens one post on its own page. This is the full read, so use {content} for the body.', 'loupely-canvas' ),
                 'lc-sec-single-post',
-                [ '{title}', '{permalink}', '{date}', '{content}', '{thumbnail}', '{thumbnail_url}', '{author}', '{author_avatar}', '{author_bio}', '{author_url}', '{categories}', '{tags}', '{post_class}', '{comment_count}', '{comments_link}' ]
+                [ '{title}', '{permalink}', '{date}', '{content}', '{thumbnail}', '{thumbnail_medium}', '{thumbnail_full}', '{thumbnail_url}', '{thumbnail_medium_url}', '{thumbnail_full_url}', '{author}', '{author_avatar}', '{author_bio}', '{author_url}', '{categories}', '{tags}', '{post_class}', '{comment_count}', '{comments_link}', '{comments}' ]
             );
             lc_render_box(
                 'lc_archive_header_html',

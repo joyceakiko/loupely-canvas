@@ -15,9 +15,13 @@
  *
  * Per-post tokens (post card and single post boxes):
  *   {title} {permalink} {date} {content} {excerpt}
- *   {thumbnail} {thumbnail_url} {author} {author_avatar} {author_bio}
+ *   {thumbnail} {thumbnail_medium} {thumbnail_full}
+ *   {thumbnail_url} {thumbnail_medium_url} {thumbnail_full_url}
+ *   {author} {author_avatar} {author_bio}
  *   {author_url} {categories} {tags} {post_class}
  *   {comment_count} {comments_link}
+ *   {pagination}   archive pagination links (outputs nothing on single posts)
+ *   {comments}     full comment thread (single post only; empty on card lists)
  * The lc_post_tokens filter lets a companion plugin add more per-post tokens.
  * Page-level tokens (archive header box):
  *   {archive_title} {archive_description} {search_form}
@@ -35,12 +39,23 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Replace per-post tokens in a template with the current loop post's values.
  * Must run inside the loop, after the_post().
+ *
+ * $context controls which context-only tokens resolve:
+ *   'card'   - {pagination} outputs archive links; {comments} is empty
+ *   'single' - {comments} outputs the comment thread; {pagination} is empty
  */
-function lc_apply_post_tokens( string $template ): string {
+function lc_apply_post_tokens( string $template, string $context = 'card' ): string {
     $id = get_the_ID();
 
-    $thumbnail     = has_post_thumbnail( $id ) ? get_the_post_thumbnail( $id, 'large' ) : '';
-    $thumbnail_url = has_post_thumbnail( $id ) ? (string) get_the_post_thumbnail_url( $id, 'large' ) : '';
+    // Thumbnail at three sizes. Each size returns an empty string when no
+    // featured image is set, so the token leaves nothing behind rather than
+    // a broken img tag.
+    $thumbnail        = has_post_thumbnail( $id ) ? get_the_post_thumbnail( $id, 'large' ) : '';
+    $thumbnail_medium = has_post_thumbnail( $id ) ? get_the_post_thumbnail( $id, 'medium' ) : '';
+    $thumbnail_full   = has_post_thumbnail( $id ) ? get_the_post_thumbnail( $id, 'full' ) : '';
+    $thumbnail_url        = has_post_thumbnail( $id ) ? (string) get_the_post_thumbnail_url( $id, 'large' ) : '';
+    $thumbnail_medium_url = has_post_thumbnail( $id ) ? (string) get_the_post_thumbnail_url( $id, 'medium' ) : '';
+    $thumbnail_full_url   = has_post_thumbnail( $id ) ? (string) get_the_post_thumbnail_url( $id, 'full' ) : '';
 
     $categories = get_the_category_list( ', ', '', $id );
     $tags       = get_the_tag_list( '', ', ', '', $id );
@@ -58,31 +73,59 @@ function lc_apply_post_tokens( string $template ): string {
     $comment_count = (int) get_comments_number( $id );
     $comments_link = (string) get_comments_link( $id );
 
+    // {pagination}: archive pagination links. Meaningful on list contexts
+    // (card, archive, search); empty on a single post where there is no loop
+    // to paginate.
+    if ( $context === 'card' ) {
+        ob_start();
+        lc_render_pagination();
+        $pagination = (string) ob_get_clean();
+    } else {
+        $pagination = '';
+    }
+
+    // {comments}: the full comment thread. Only rendered on a single post
+    // where comments are open or there are existing comments. Empty on card
+    // lists, where loading a comment thread per post would be incorrect.
+    if ( $context === 'single' && ( comments_open( $id ) || get_comments_number( $id ) > 0 ) ) {
+        ob_start();
+        comments_template();
+        $comments = (string) ob_get_clean();
+    } else {
+        $comments = '';
+    }
+
     // Hide title (Page settings) blanks the title token on this post's own
     // single view, so the title leaves the markup rather than rendering empty.
-    // It is scoped to the single view, so the post still shows its title in
-    // card lists and archives.
+    // Scoped to the single view, so the post still shows its title in card
+    // lists and archives.
     $hide_title = is_singular()
         && (int) get_queried_object_id() === (int) $id
         && get_post_meta( $id, '_lc_hide_title', true ) === '1';
 
     $replacements = [
-        '{title}'         => $hide_title ? '' : esc_html( get_the_title( $id ) ),
-        '{permalink}'     => esc_url( get_permalink( $id ) ),
-        '{date}'          => esc_html( get_the_date( '', $id ) ),
-        '{content}'       => apply_filters( 'the_content', get_the_content( null, false, $id ) ),
-        '{excerpt}'       => esc_html( get_the_excerpt( $id ) ),
-        '{thumbnail}'     => $thumbnail,
-        '{thumbnail_url}' => esc_url( $thumbnail_url ),
-        '{author}'        => esc_html( get_the_author() ),
-        '{author_avatar}' => $author_avatar,
-        '{author_bio}'    => $author_bio,
-        '{author_url}'    => esc_url( $author_url ),
-        '{categories}'    => (string) $categories,
-        '{tags}'          => (string) $tags,
-        '{post_class}'    => $post_class,
-        '{comment_count}' => esc_html( (string) $comment_count ),
-        '{comments_link}' => esc_url( $comments_link ),
+        '{title}'              => $hide_title ? '' : esc_html( get_the_title( $id ) ),
+        '{permalink}'          => esc_url( get_permalink( $id ) ),
+        '{date}'               => esc_html( get_the_date( '', $id ) ),
+        '{content}'            => apply_filters( 'the_content', get_the_content( null, false, $id ) ),
+        '{excerpt}'            => esc_html( get_the_excerpt( $id ) ),
+        '{thumbnail}'          => $thumbnail,
+        '{thumbnail_medium}'   => $thumbnail_medium,
+        '{thumbnail_full}'     => $thumbnail_full,
+        '{thumbnail_url}'          => esc_url( $thumbnail_url ),
+        '{thumbnail_medium_url}'   => esc_url( $thumbnail_medium_url ),
+        '{thumbnail_full_url}'     => esc_url( $thumbnail_full_url ),
+        '{author}'             => esc_html( get_the_author() ),
+        '{author_avatar}'      => $author_avatar,
+        '{author_bio}'         => $author_bio,
+        '{author_url}'         => esc_url( $author_url ),
+        '{categories}'         => (string) $categories,
+        '{tags}'               => (string) $tags,
+        '{post_class}'         => $post_class,
+        '{comment_count}'      => esc_html( (string) $comment_count ),
+        '{comments_link}'      => esc_url( $comments_link ),
+        '{pagination}'         => $pagination,
+        '{comments}'           => $comments,
     ];
 
     // Add-ons extend the per-post token map through this filter, which receives
@@ -142,7 +185,7 @@ function lc_render_single_post(): void {
     if ( trim( $tpl ) === '' ) {
         $tpl = lc_default_single_post();
     }
-    echo lc_apply_post_tokens( $tpl );
+    echo lc_apply_post_tokens( $tpl, 'single' );
 }
 
 

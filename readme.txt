@@ -3,7 +3,7 @@ Contributors: loupely
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 2.20.5
+Stable tag: 2.21.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: one-column, full-width-template, translation-ready, custom-colors, editor-style
@@ -53,6 +53,14 @@ From Appearance, Loupely Canvas. A single page can override them under the Heade
 This full edition is distributed through GitHub and loupelycanvas.com. It includes a built in update checker that watches the project's GitHub releases, so update notices appear in wp-admin and you can update in one click. The Loupely Canvas Lite edition on WordPress.org updates through the directory instead.
 
 == Changelog ==
+
+= 2.21.0 =
+* New header and footer tokens: {site_url} (homepage URL without trailing slash), {page_title} (current page or post title), {current_url} (full URL of the current page).
+* New post card token: {pagination} places archive pagination links wherever you put it in your Post card template. If you do not use it, pagination still renders below the list automatically.
+* New single post token: {comments} places the full comment thread wherever you put it in your Single post template. If you do not use it, comments still render below your markup automatically.
+* New thumbnail tokens: {thumbnail_medium}, {thumbnail_full}, {thumbnail_medium_url}, {thumbnail_full_url} for explicit size control.
+* Token reference accordion on the settings screen updated to document all tokens by box.
+* Resetting theme settings now also clears the Lite migration offer state, so it can reappear after a reset.
 
 = 2.20.5 =
 * The Loupely Canvas Lite carry-over now works and is an offer rather than silent. Lite saves its header and footer as Customizer settings, which the earlier version looked for in the wrong place, so nothing came across. The full theme now reads them correctly and, when it finds a header or footer Lite saved, shows a notice on the Themes screen and the Loupely Canvas settings screen with an Import button. Importing fills only boxes that are still empty and carries your per page hide title, full width, and body class settings too. No thanks dismisses the offer for good. Resetting theme settings clears the offer, so it can appear again.

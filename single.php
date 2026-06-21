@@ -3,9 +3,10 @@
 <?php
 /**
  * Single post. Renders your Single post markup, with tokens replaced, then
- * post navigation and comments. Comments use standard WordPress markup, so
- * you style them with your own CSS in the Head code box, the same way you
- * style everything else.
+ * post navigation and comments. The {comments} token in your Single post
+ * template places the comment thread wherever you put it. If you do not use
+ * that token, comments render below your markup automatically when they are
+ * open or there are existing comments.
  *
  * Per page settings apply here too, since the meta box is registered for
  * posts as well as pages. Full width drops the main.lc-content wrapper.
@@ -35,7 +36,13 @@ if ( have_posts() ) :
             ] );
         }
 
-        if ( comments_open() || get_comments_number() ) {
+        // Comments: only rendered here when the user has not placed the
+        // {comments} token in their Single post template. When the token is
+        // present, comments_template() already ran inside lc_render_single_post()
+        // and running it again would duplicate the thread.
+        $lc_single_tpl = trim( (string) get_option( 'lc_single_post_html', '' ) );
+        $lc_comments_in_template = ( strpos( $lc_single_tpl, '{comments}' ) !== false );
+        if ( ! $lc_comments_in_template && ( comments_open() || get_comments_number() ) ) {
             comments_template();
         }
     endwhile;

@@ -11,19 +11,23 @@
  *                          are left alone.
  *   Wipe content           A set of checkboxes for the content to delete, so the
  *                          user picks before running it: pages, posts, media,
- *                          and the theme settings. When Canvas Pro is active a
- *                          second group adds the Pro content: snippets, header
- *                          and footer sets, templates, injections, all custom
- *                          post type items, and Pro settings and version
- *                          history. When Pro is not active but data it left
- *                          behind is still in the database, the group instead
- *                          offers to remove that leftover data.
+ *                          and the theme settings. A second group always shows
+ *                          the Canvas Pro items: snippets, header and footer
+ *                          sets, templates, injections, each custom post type
+ *                          by name, and Pro settings and version history. When
+ *                          Pro is not active a notice in that group says so and
+ *                          links to loupelycanvas.com/pro.
  *
- * Each action runs only after the user types the confirmation word in a dialog,
- * which the confirm script enforces in the browser and the handler verifies
- * again on the server. Both handlers check a nonce and the manage_options
- * capability before touching anything, and the wipe deletes only the items the
- * user selected, validated against the list of items shown.
+ * Each checkbox carries a live item count so the confirm dialog can show
+ * "Header and footer sets (5)" rather than just the label. Counts are
+ * queried once when the page renders. Custom post types get one checkbox
+ * each, named after the type, so counts are per type.
+ *
+ * Each action runs only after the user types the confirmation word in a
+ * dialog, which the confirm script enforces in the browser and the handler
+ * verifies again on the server. Both handlers check a nonce and the
+ * manage_options capability before touching anything, and the wipe deletes
+ * only the items the user selected, validated against the list of items shown.
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -155,18 +159,39 @@ function lc_reset_option_keys(): array {
 		'lc_hide_editor_menus',
 		'lc_enable_find_replace',
 		'lc_editor_preview',
+		'lc_lite_import_done',
+		'lc_lite_import_dismissed',
+		'lc_lite_migrated',
 	];
 }
 
 
 /**
- * The selectable wipe items, each a checkbox in the panel. The Pro items appear
- * only when Pro is active. When Pro is not active but data it left behind is
- * still present, a single item appears in its place to remove that leftover
- * data. Each item is one of a few kinds: a post type to delete, the theme
- * settings, the Pro settings and history, or all leftover Pro data at once. The
- * handler validates the posted selection against these keys, so a Pro key
- * cannot be acted on unless its checkbox was actually offered.
+ * Count every post of a given type, including drafts and trashed items.
+ */
+function lc_reset_count_posts( string $post_type ): int {
+	global $wpdb;
+	$count = $wpdb->get_var(
+		$wpdb->prepare(
+			"SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = %s",
+			$post_type
+		)
+	);
+	return (int) $count;
+}
+
+
+/**
+ * The selectable wipe items, each a checkbox in the panel. The Canvas Pro
+ * group is always included so users without Pro can see what it covers. Items
+ * that are not backed by a post type (settings, pro_data) carry count -1 to
+ * signal that no count is shown. Custom post types each get their own item
+ * keyed as "cpt_{slug}" so the handler can delete them individually. When Pro
+ * is not active the Pro checkboxes are rendered disabled so they cannot be
+ * submitted, and a notice in the fieldset explains this.
+ *
+ * The handler validates the posted selection against these keys, so a Pro key
+ * cannot be acted on unless its checkbox was actually offered and enabled.
  */
 function lc_reset_items(): array {
 	$items = [
@@ -175,64 +200,92 @@ function lc_reset_items(): array {
 			'note'      => __( 'Every page, including drafts and trashed pages.', 'loupely-canvas' ),
 			'post_type' => 'page',
 			'pro'       => false,
+			'count'     => lc_reset_count_posts( 'page' ),
 		],
 		'posts' => [
 			'label'     => __( 'Posts', 'loupely-canvas' ),
 			'note'      => __( 'Every blog post, including drafts and trashed posts.', 'loupely-canvas' ),
 			'post_type' => 'post',
 			'pro'       => false,
+			'count'     => lc_reset_count_posts( 'post' ),
 		],
 		'media' => [
 			'label'     => __( 'Media', 'loupely-canvas' ),
 			'note'      => __( 'Every file in the Media Library, removed from the library and from disk.', 'loupely-canvas' ),
 			'post_type' => 'attachment',
 			'pro'       => false,
+			'count'     => lc_reset_count_posts( 'attachment' ),
 		],
 		'settings' => [
 			'label'     => __( 'Theme settings', 'loupely-canvas' ),
 			'note'      => __( 'The boxes and toggles on this screen, the same as the reset above.', 'loupely-canvas' ),
 			'post_type' => '',
 			'pro'       => false,
+			'count'     => -1,
 		],
 	];
 
-	if ( lc_reset_pro_active() ) {
-		$pro_labels = [
-			'snippets'   => [ __( 'Snippets', 'loupely-canvas' ), __( 'Every Canvas Pro snippet.', 'loupely-canvas' ) ],
-			'hf_sets'    => [ __( 'Header and footer sets', 'loupely-canvas' ), __( 'Every Canvas Pro header and footer set.', 'loupely-canvas' ) ],
-			'templates'  => [ __( 'Templates', 'loupely-canvas' ), __( 'Every Canvas Pro page template.', 'loupely-canvas' ) ],
-			'injections' => [ __( 'Injections', 'loupely-canvas' ), __( 'Every Canvas Pro injection.', 'loupely-canvas' ) ],
-		];
-		foreach ( lc_reset_pro_post_types() as $key => $post_type ) {
-			$items[ $key ] = [
-				'label'     => $pro_labels[ $key ][0],
-				'note'      => $pro_labels[ $key ][1],
-				'post_type' => $post_type,
-				'pro'       => true,
-			];
-		}
-		if ( ! empty( lc_reset_custom_post_types() ) ) {
-			$items['pro_cpts'] = [
-				'label'     => __( 'Custom post types', 'loupely-canvas' ),
-				'note'      => __( 'Every item of every Canvas Pro custom post type, including drafts and trashed items. The type definitions themselves stay until you also wipe Pro settings below.', 'loupely-canvas' ),
-				'post_type' => '',
-				'pro'       => true,
-			];
-		}
-		$items['pro_data'] = [
-			'label'     => __( 'Pro settings and version history', 'loupely-canvas' ),
-			'note'      => __( 'Canvas Pro settings, custom post type definitions, and the saved version history of every item.', 'loupely-canvas' ),
-			'post_type' => '',
+	// Pro items are always listed. When Pro is active the counts are live;
+	// when Pro is not active the checkboxes are disabled and show zero.
+	$pro_active = lc_reset_pro_active();
+
+	$pro_labels = [
+		'snippets'   => [ __( 'Snippets', 'loupely-canvas' ), __( 'Every Canvas Pro snippet.', 'loupely-canvas' ) ],
+		'hf_sets'    => [ __( 'Header and footer sets', 'loupely-canvas' ), __( 'Every Canvas Pro header and footer set.', 'loupely-canvas' ) ],
+		'templates'  => [ __( 'Templates', 'loupely-canvas' ), __( 'Every Canvas Pro page template.', 'loupely-canvas' ) ],
+		'injections' => [ __( 'Injections', 'loupely-canvas' ), __( 'Every Canvas Pro injection.', 'loupely-canvas' ) ],
+	];
+	foreach ( lc_reset_pro_post_types() as $key => $post_type ) {
+		$items[ $key ] = [
+			'label'     => $pro_labels[ $key ][0],
+			'note'      => $pro_labels[ $key ][1],
+			'post_type' => $post_type,
 			'pro'       => true,
-		];
-	} elseif ( lc_reset_orphaned_pro_exists() ) {
-		$items['pro_orphaned'] = [
-			'label'     => __( 'Remove all leftover Canvas Pro data', 'loupely-canvas' ),
-			'note'      => __( 'Snippets, header and footer sets, templates, injections, custom post type items, Pro settings, custom post type definitions, and version history left in the database after Canvas Pro was removed.', 'loupely-canvas' ),
-			'post_type' => '',
-			'pro'       => true,
+			'count'     => $pro_active ? lc_reset_count_posts( $post_type ) : 0,
+			'disabled'  => ! $pro_active,
 		];
 	}
+
+	// Each user-defined custom post type gets its own checkbox. A placeholder
+	// row is always shown so users know the feature exists whether or not any
+	// types are defined yet.
+	$cpts = lc_reset_custom_post_types();
+	if ( empty( $cpts ) ) {
+		$items['pro_cpts_placeholder'] = [
+			'label'     => __( 'Custom post types', 'loupely-canvas' ),
+			'note'      => __( 'No custom post types are defined yet. Once you create some in Canvas Pro, they will appear here individually.', 'loupely-canvas' ),
+			'post_type' => '',
+			'pro'       => true,
+			'count'     => 0,
+			'disabled'  => true,
+			'is_cpt'    => false,
+		];
+	} else {
+		foreach ( $cpts as $slug => $plural ) {
+			$items[ 'cpt_' . $slug ] = [
+				'label'     => $plural,
+				'note'      => sprintf(
+					/* translators: %s is the plural name of a custom post type. */
+					__( 'Every item of the %s post type, including drafts and trashed items. The type definition stays until you also wipe Pro settings below.', 'loupely-canvas' ),
+					$plural
+				),
+				'post_type' => $slug,
+				'pro'       => true,
+				'count'     => $pro_active ? lc_reset_count_posts( $slug ) : 0,
+				'disabled'  => ! $pro_active,
+				'is_cpt'    => true,
+			];
+		}
+	}
+
+	$items['pro_data'] = [
+		'label'     => __( 'Pro settings and version history', 'loupely-canvas' ),
+		'note'      => __( 'Canvas Pro settings, custom post type definitions, and the saved version history of every item.', 'loupely-canvas' ),
+		'post_type' => '',
+		'pro'       => true,
+		'count'     => -1,
+		'disabled'  => ! $pro_active,
+	];
 
 	return $items;
 }
@@ -372,12 +425,9 @@ function lc_handle_reset_everything() {
 			lc_reset_delete_settings();
 		} elseif ( $key === 'pro_data' ) {
 			lc_reset_delete_pro_data();
-		} elseif ( $key === 'pro_orphaned' ) {
-			lc_reset_delete_pro_all();
-		} elseif ( $key === 'pro_cpts' ) {
-			foreach ( lc_reset_custom_post_types() as $slug => $plural ) {
-				lc_reset_delete_post_type( $slug );
-			}
+		} elseif ( isset( $items[ $key ]['is_cpt'] ) && $items[ $key ]['is_cpt'] ) {
+			// Individual custom post type checkbox: delete items of that one type.
+			lc_reset_delete_post_type( $items[ $key ]['post_type'] );
 		} elseif ( $items[ $key ]['post_type'] !== '' ) {
 			lc_reset_delete_post_type( $items[ $key ]['post_type'] );
 		}
@@ -443,12 +493,29 @@ add_action( 'admin_enqueue_scripts', 'lc_enqueue_reset_assets' );
  * Render one wipe checkbox.
  */
 function lc_reset_render_checkbox( string $key, array $item ) {
-	$pro_attr = ! empty( $item['pro'] ) ? ' data-pro="1"' : '';
+	$pro_attr      = ! empty( $item['pro'] ) ? ' data-pro="1"' : '';
+	$count         = isset( $item['count'] ) ? (int) $item['count'] : -1;
+	$count_attr    = $count >= 0 ? ' data-count="' . $count . '"' : '';
+	$disabled      = ! empty( $item['disabled'] );
+	$disabled_attr = $disabled ? ' disabled' : '';
+	$empty         = ! $disabled && $count === 0;
+
+	$classes = 'lc-reset-option';
+	if ( $disabled ) {
+		$classes .= ' lc-reset-option--disabled';
+	} elseif ( $empty ) {
+		$classes .= ' lc-reset-option--empty';
+	}
 	?>
-	<label class="lc-reset-option">
-		<input type="checkbox" name="lc_reset_types[]" value="<?php echo esc_attr( $key ); ?>" data-label="<?php echo esc_attr( $item['label'] ); ?>"<?php echo $pro_attr; ?>>
+	<label class="<?php echo esc_attr( $classes ); ?>">
+		<input type="checkbox" name="lc_reset_types[]" value="<?php echo esc_attr( $key ); ?>" data-label="<?php echo esc_attr( $item['label'] ); ?>"<?php echo $pro_attr . $count_attr . $disabled_attr; ?>>
 		<span class="lc-reset-option__text">
-			<span class="lc-reset-option__label"><?php echo esc_html( $item['label'] ); ?></span>
+			<span class="lc-reset-option__label">
+				<?php echo esc_html( $item['label'] ); ?>
+				<?php if ( $count >= 0 ) : ?>
+					<span class="lc-reset-option__count">(<?php echo esc_html( (string) $count ); ?>)</span>
+				<?php endif; ?>
+			</span>
 			<span class="lc-reset-option__note"><?php echo esc_html( $item['note'] ); ?></span>
 		</span>
 	</label>
@@ -468,17 +535,7 @@ function lc_render_reset_panel() {
 
 	$items  = lc_reset_items();
 	$phrase = lc_reset_confirm_phrase();
-
-	$has_pro_items = false;
-	foreach ( $items as $item ) {
-		if ( $item['pro'] ) {
-			$has_pro_items = true;
-			break;
-		}
-	}
-	$pro_legend = lc_reset_pro_active()
-		? __( 'Canvas Pro', 'loupely-canvas' )
-		: __( 'Leftover Canvas Pro data', 'loupely-canvas' );
+	$pro_active = lc_reset_pro_active();
 	?>
 	<div id="lc-sec-reset" class="lc-section lc-reset-panel">
 		<h2 class="lc-reset-panel__title"><?php echo esc_html__( 'Reset and wipe', 'loupely-canvas' ); ?></h2>
@@ -520,22 +577,30 @@ function lc_render_reset_panel() {
 					?>
 				</fieldset>
 
-				<?php if ( $has_pro_items ) : ?>
-					<fieldset class="lc-reset-group lc-reset-group--pro">
-						<legend class="lc-reset-group__legend"><?php echo esc_html( $pro_legend ); ?></legend>
-						<?php if ( ! lc_reset_pro_active() ) : ?>
-							<p class="lc-reset-group__note"><?php echo esc_html__( 'Canvas Pro is not active, but data it created is still in the database. You can remove it here.', 'loupely-canvas' ); ?></p>
-						<?php endif; ?>
-						<?php
-						foreach ( $items as $key => $item ) {
-							if ( ! $item['pro'] ) {
-								continue;
-							}
-							lc_reset_render_checkbox( $key, $item );
+				<fieldset class="lc-reset-group lc-reset-group--pro">
+					<legend class="lc-reset-group__legend"><?php echo esc_html__( 'Canvas Pro', 'loupely-canvas' ); ?></legend>
+				<?php if ( ! $pro_active ) : ?>
+						<div class="lc-reset-pro-notice">
+							<p class="lc-reset-pro-notice__text">
+								<?php
+								printf(
+									/* translators: %s is a link to the Canvas Pro page. */
+									esc_html__( 'These options are for Canvas Pro, which extends Canvas to include a full screen code editor with syntax coloring and more, plus version history, page templates, code snippets, HTML/CSS/Javascript injections, and then some. %s', 'loupely-canvas' ),
+									'<a class="lc-reset-pro-notice__link" href="https://loupelycanvas.com/pro" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Learn more about Canvas Pro.', 'loupely-canvas' ) . '</a>'
+								);
+								?>
+							</p>
+						</div>
+					<?php endif; ?>
+					<?php
+					foreach ( $items as $key => $item ) {
+						if ( ! $item['pro'] ) {
+							continue;
 						}
-						?>
-					</fieldset>
-				<?php endif; ?>
+						lc_reset_render_checkbox( $key, $item );
+					}
+					?>
+				</fieldset>
 
 				<button
 					type="button"

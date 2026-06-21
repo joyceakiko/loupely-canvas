@@ -4,11 +4,11 @@
  * Wires the reset buttons on the settings screen to a confirm dialog. Each
  * button names the form it submits and carries its own title, body, and confirm
  * label. The wipe button stays disabled until at least one content checkbox is
- * ticked, and the dialog lists the ticked items so the user sees exactly what
- * goes. The dialog itself stays locked until the typed word matches the
- * confirmation word, then it writes that word into the target form's hidden
- * field and submits it. The word comes from PHP (lcReset.phrase), so the dialog
- * and the server check for the same word.
+ * ticked, and the dialog lists the ticked items with their counts so the user
+ * sees exactly what goes. The dialog itself stays locked until the typed word
+ * matches the confirmation word, then it writes that word into the target
+ * form's hidden field and submits it. The word comes from PHP (lcReset.phrase),
+ * so the dialog and the server check for the same word.
  */
 ( function () {
 	"use strict";
@@ -80,8 +80,14 @@
 			return;
 		}
 		boxes.forEach( function ( box ) {
+			var label = box.getAttribute( "data-label" ) || box.value;
+			var countAttr = box.getAttribute( "data-count" );
 			var li = document.createElement( "li" );
-			li.textContent = box.getAttribute( "data-label" ) || box.value;
+			if ( countAttr !== null && countAttr !== "" ) {
+				li.textContent = label + " (" + countAttr + ")";
+			} else {
+				li.textContent = label;
+			}
 			listEl.appendChild( li );
 		} );
 		listEl.hidden = false;

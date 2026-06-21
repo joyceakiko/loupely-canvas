@@ -504,6 +504,50 @@ html:has(body.appearance_page_lc-header-footer-html) {
     color: #4a5e52;
 }
 
+/* Pro upsell banner shown when Canvas Pro is not active. */
+.lc-canvas-settings .lc-reset-pro-notice {
+    margin: 0 0 14px;
+    padding: 13px 16px;
+    background: rgba(122, 158, 135, 0.10);
+    border: 1px solid #aec4bd;
+    border-left: 3px solid #7a9e87;
+    border-radius: 5px;
+}
+
+.lc-canvas-settings .lc-reset-pro-notice__text {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.65;
+    color: #1a2420;
+}
+
+.lc-canvas-settings .lc-reset-pro-notice__link {
+    color: #5c7f68;
+    font-weight: 500;
+    text-decoration: underline;
+    white-space: nowrap;
+}
+
+.lc-canvas-settings .lc-reset-pro-notice__link:hover,
+.lc-canvas-settings .lc-reset-pro-notice__link:focus {
+    color: #1a2420;
+}
+
+/* Disabled checkboxes in the Pro group when Pro is not active. */
+.lc-canvas-settings .lc-reset-option--disabled {
+    cursor: default;
+    opacity: 0.5;
+}
+
+.lc-canvas-settings .lc-reset-option--disabled input[type="checkbox"] {
+    cursor: not-allowed;
+}
+
+/* Empty checkboxes (count is zero but still actionable). */
+.lc-canvas-settings .lc-reset-option--empty {
+    opacity: 0.5;
+}
+
 .lc-canvas-settings .lc-reset-option {
     display: flex;
     align-items: flex-start;

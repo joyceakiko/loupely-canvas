@@ -13,7 +13,7 @@
  *   inc/starter-content.php  One click example header, footer and page
  *   inc/reset-content.php  Reset the theme settings, or wipe all content, with a typed confirmation
  *   inc/editor-tools.php   Loads the find and replace tool in the editor and settings
- *   inc/lite-migration.php Carries Lite settings over when the full theme is activated
+ *   inc/lite-migration.php Offers to import a Lite site's header, footer, and per page settings
  *
  * The theme stays out of the way on the front end. Everything visible comes
  * from the HTML you paste. No injected block styles, no container widths.
@@ -21,7 +21,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'LC_VERSION', '2.19.1' );
+define( 'LC_VERSION', '2.20.5' );
 
 
 // ===========================================================

@@ -3,7 +3,7 @@ Contributors: loupely
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 2.19.1
+Stable tag: 2.20.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: one-column, full-width-template, translation-ready, custom-colors, editor-style
@@ -53,6 +53,26 @@ From Appearance, Loupely Canvas. A single page can override them under the Heade
 This full edition is distributed through GitHub and loupelycanvas.com. It includes a built in update checker that watches the project's GitHub releases, so update notices appear in wp-admin and you can update in one click. The Loupely Canvas Lite edition on WordPress.org updates through the directory instead.
 
 == Changelog ==
+
+= 2.20.5 =
+* The Loupely Canvas Lite carry-over now works and is an offer rather than silent. Lite saves its header and footer as Customizer settings, which the earlier version looked for in the wrong place, so nothing came across. The full theme now reads them correctly and, when it finds a header or footer Lite saved, shows a notice on the Themes screen and the Loupely Canvas settings screen with an Import button. Importing fills only boxes that are still empty and carries your per page hide title, full width, and body class settings too. No thanks dismisses the offer for good. Resetting theme settings clears the offer, so it can appear again.
+
+= 2.20.4 =
+* Custom post types placeholder now shows (0) count to match all other empty items.
+
+= 2.20.3 =
+* Wipe checkboxes with a count of zero now dim to match the disabled custom post types placeholder, so empty items are visually consistent across both groups.
+
+= 2.20.2 =
+* Custom post types wipe row now always shows in the Canvas Pro group. When no types are defined yet, a placeholder row explains where they will appear. When types exist, each gets its own row as before.
+* Canvas Pro upsell notice redesigned as a sage-styled banner with fuller copy describing what Pro includes.
+* Disabled Pro checkboxes now visually dim when Pro is not active.
+
+= 2.20.1 =
+* Canvas Pro wipe section always shows, even when Pro is not active. When Pro is not active the checkboxes are disabled and a notice links to loupelycanvas.com/pro. Custom post type checkboxes now always appear in the Pro group when CPTs are defined, not only when they have items.
+
+= 2.20.0 =
+* Custom post types in the wipe panel now get one checkbox each, named after the type, so you can delete them individually. Each checkbox shows a live item count. The confirm dialog lists every selected item with its count.
 
 = 2.19.1 =
 * Wipe content has a single Custom post types checkbox in the Canvas Pro group. Checking it and running the wipe deletes every item of every Canvas Pro custom post type at once. The type definitions stay until you also wipe Pro settings.

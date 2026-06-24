@@ -1,0 +1,91 @@
+/**
+ * Loupely Canvas - SEO section styles
+ *
+ * Scoped to the SEO section in the page settings, so nothing leaks into the
+ * rest of wp-admin. Covers the sage Generate button, the character counters,
+ * and the field summary the button prints above the code box.
+ */
+
+.lc-seo .lc-seo-generate {
+	background: #7a9e87;
+	border-color: #5c7f68;
+	color: #fff;
+	text-shadow: none;
+	box-shadow: none;
+}
+
+.lc-seo .lc-seo-generate:hover,
+.lc-seo .lc-seo-generate:focus,
+.lc-seo .lc-seo-generate:active {
+	background: #5c7f68;
+	border-color: #5c7f68;
+	color: #fff;
+}
+
+.lc-seo .lc-seo-generate:focus {
+	box-shadow: 0 0 0 2px #7a9e87;
+}
+
+.lc-seo .lc-seo-pick-image,
+.lc-seo .lc-seo-clear-image {
+	background: #fff;
+	border-color: #5c7f68;
+	color: #5c7f68;
+	box-shadow: none;
+}
+
+.lc-seo .lc-seo-pick-image:hover,
+.lc-seo .lc-seo-pick-image:focus,
+.lc-seo .lc-seo-clear-image:hover,
+.lc-seo .lc-seo-clear-image:focus {
+	background: #7a9e87;
+	border-color: #5c7f68;
+	color: #fff;
+}
+
+.lc-seo .lc-seo-pick-image:focus,
+.lc-seo .lc-seo-clear-image:focus {
+	box-shadow: 0 0 0 2px #7a9e87;
+}
+
+.lc-seo .lc-seo-count {
+	color: #7a9087;
+	font-size: 12px;
+	margin-top: 4px;
+}
+
+.lc-seo .lc-seo-count.over {
+	color: #b32d2e;
+	font-weight: 600;
+}
+
+.lc-seo .lc-seo-summary {
+	margin: 0 0 10px;
+	padding: 10px 14px;
+	background: #f0f4f1;
+	border: 1px solid #d5ded6;
+	border-radius: 6px;
+	max-width: 680px;
+	font-size: 13px;
+}
+
+.lc-seo .lc-seo-summary-row {
+	margin: 0 0 4px;
+}
+
+.lc-seo .lc-seo-summary-row:last-child {
+	margin-bottom: 0;
+}
+
+.lc-seo .lc-seo-summary-in strong {
+	color: #5c7f68;
+}
+
+.lc-seo .lc-seo-summary-out strong {
+	color: #7a9087;
+}
+
+.lc-seo .lc-seo-summary-note {
+	margin: 0;
+	color: #4a5e52;
+}

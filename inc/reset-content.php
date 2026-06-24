@@ -11,12 +11,13 @@
  *                          are left alone.
  *   Wipe content           A set of checkboxes for the content to delete, so the
  *                          user picks before running it: pages, posts, media,
- *                          and the theme settings. A second group always shows
- *                          the Canvas Pro items: snippets, header and footer
- *                          sets, templates, injections, each custom post type
- *                          by name, and Pro settings and version history. When
- *                          Pro is not active a notice in that group says so and
- *                          links to loupelycanvas.com/pro.
+ *                          the SEO data saved on content, and the theme settings.
+ *                          A second group always shows the Canvas Pro items:
+ *                          snippets, header and footer sets, templates,
+ *                          injections, each custom post type by name, and Pro
+ *                          settings and version history. When Pro is not active a
+ *                          notice in that group says so and links to
+ *                          loupelycanvas.com/pro.
  *
  * Each checkbox carries a live item count so the confirm dialog can show
  * "Header and footer sets (5)" rather than just the label. Counts are
@@ -159,10 +160,51 @@ function lc_reset_option_keys(): array {
 		'lc_hide_editor_menus',
 		'lc_enable_find_replace',
 		'lc_editor_preview',
+		'lc_seo_enabled',
 		'lc_lite_import_done',
 		'lc_lite_import_dismissed',
 		'lc_lite_migrated',
 	];
+}
+
+
+/**
+ * Count the pages, posts, and other items that carry SEO data, so the wipe can
+ * show how many would be cleared. Zero when the SEO feature is not present.
+ */
+function lc_reset_count_seo(): int {
+	if ( ! function_exists( 'lc_seo_meta_keys' ) ) {
+		return 0;
+	}
+	$keys = lc_seo_meta_keys();
+	if ( empty( $keys ) ) {
+		return 0;
+	}
+	global $wpdb;
+	$placeholders = implode( ',', array_fill( 0, count( $keys ), '%s' ) );
+	$count        = $wpdb->get_var(
+		$wpdb->prepare(
+			"SELECT COUNT(DISTINCT post_id) FROM {$wpdb->postmeta} WHERE meta_key IN ($placeholders)",
+			$keys
+		)
+	);
+	return (int) $count;
+}
+
+
+/**
+ * Clear the SEO data from every post that carries it, of any post type, while
+ * leaving the posts themselves in place. Deleting a page or post elsewhere in
+ * this wipe already removes its meta, so this is for stripping SEO without
+ * deleting the content.
+ */
+function lc_reset_delete_seo() {
+	if ( ! function_exists( 'lc_seo_meta_keys' ) ) {
+		return;
+	}
+	foreach ( lc_seo_meta_keys() as $key ) {
+		delete_metadata( 'post', 0, $key, '', true );
+	}
 }
 
 
@@ -215,6 +257,13 @@ function lc_reset_items(): array {
 			'post_type' => 'attachment',
 			'pro'       => false,
 			'count'     => lc_reset_count_posts( 'attachment' ),
+		],
+		'seo' => [
+			'label'     => __( 'SEO data', 'loupely-canvas' ),
+			'note'      => __( 'The SEO title, description, share image, schema type, and page schema saved on pages and posts, and on any custom post type. The pages and posts themselves stay.', 'loupely-canvas' ),
+			'post_type' => '',
+			'pro'       => false,
+			'count'     => lc_reset_count_seo(),
 		],
 		'settings' => [
 			'label'     => __( 'Theme settings', 'loupely-canvas' ),
@@ -302,8 +351,23 @@ function lc_reset_delete_settings() {
 
 
 /**
- * Delete every post of one type. Goes through wp_delete_post so meta and term
- * links are cleaned up too, and so an attachment also has its files removed.
+ * The taxonomies Canvas Pro registers, keyed by the post type each belongs to.
+ * Deleting a type's posts clears the term relationships but leaves the term
+ * definitions, so the wipe removes the terms of the matching taxonomy too.
+ */
+function lc_reset_pro_taxonomies_by_post_type(): array {
+	return [
+		'lc_snippet'   => 'lc_snippet_cat',
+		'lc_template'  => 'lc_template_cat',
+		'lc_injection' => 'lc_injection_cat',
+	];
+}
+
+/**
+ * Delete every post of one type, then clear the terms of the taxonomy that type
+ * owns, so no orphaned category or group definitions are left behind. Posts go
+ * through wp_delete_post so meta and term links are cleaned up too, and so an
+ * attachment also has its files removed.
  */
 function lc_reset_delete_post_type( string $post_type ) {
 	global $wpdb;
@@ -313,6 +377,52 @@ function lc_reset_delete_post_type( string $post_type ) {
 	foreach ( $ids as $id ) {
 		wp_delete_post( (int) $id, true );
 	}
+
+	$taxonomies = lc_reset_pro_taxonomies_by_post_type();
+	if ( isset( $taxonomies[ $post_type ] ) ) {
+		lc_reset_delete_taxonomy_terms( $taxonomies[ $post_type ] );
+	}
+}
+
+/**
+ * Delete every term of one Canvas Pro taxonomy. When Pro is active the taxonomy
+ * is registered, so terms are removed through the term API, which also clears
+ * their term meta and relationship rows. When Pro is inactive the taxonomy is
+ * not registered, so the rows are cleared directly from the term tables, keyed
+ * by taxonomy name, the only reliable path with no taxonomy object to query.
+ */
+function lc_reset_delete_taxonomy_terms( string $taxonomy ) {
+	global $wpdb;
+
+	if ( taxonomy_exists( $taxonomy ) ) {
+		$terms = get_terms( [ 'taxonomy' => $taxonomy, 'hide_empty' => false, 'fields' => 'ids' ] );
+		if ( ! is_wp_error( $terms ) ) {
+			foreach ( $terms as $term_id ) {
+				wp_delete_term( (int) $term_id, $taxonomy );
+			}
+		}
+		return;
+	}
+
+	$tt = $wpdb->get_results(
+		$wpdb->prepare(
+			"SELECT term_taxonomy_id, term_id FROM {$wpdb->term_taxonomy} WHERE taxonomy = %s",
+			$taxonomy
+		)
+	);
+	if ( ! $tt ) {
+		return;
+	}
+	$ttids    = array_map( static function ( $r ) { return (int) $r->term_taxonomy_id; }, $tt );
+	$term_ids = array_map( static function ( $r ) { return (int) $r->term_id; }, $tt );
+
+	$tt_ph = implode( ',', array_fill( 0, count( $ttids ), '%d' ) );
+	$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN ($tt_ph)", $ttids ) );
+	$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->term_taxonomy} WHERE term_taxonomy_id IN ($tt_ph)", $ttids ) );
+
+	$t_ph = implode( ',', array_fill( 0, count( $term_ids ), '%d' ) );
+	$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->termmeta} WHERE term_id IN ($t_ph)", $term_ids ) );
+	$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->terms} WHERE term_id IN ($t_ph)", $term_ids ) );
 }
 
 
@@ -340,8 +450,9 @@ function lc_reset_delete_pro_data() {
 
 
 /**
- * Delete all Canvas Pro data: its content posts, then its settings and history.
- * Clears what Canvas Pro leaves in the database while the plugin is inactive.
+ * Delete all Canvas Pro data: its content posts (each clearing its taxonomy
+ * terms as it goes), then its settings and history. Clears what Canvas Pro
+ * leaves in the database while the plugin is inactive.
  */
 function lc_reset_delete_pro_all() {
 	foreach ( lc_reset_pro_post_types() as $post_type ) {
@@ -423,6 +534,8 @@ function lc_handle_reset_everything() {
 	foreach ( $selected as $key ) {
 		if ( $key === 'settings' ) {
 			lc_reset_delete_settings();
+		} elseif ( $key === 'seo' ) {
+			lc_reset_delete_seo();
 		} elseif ( $key === 'pro_data' ) {
 			lc_reset_delete_pro_data();
 		} elseif ( isset( $items[ $key ]['is_cpt'] ) && $items[ $key ]['is_cpt'] ) {

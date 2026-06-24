@@ -3,7 +3,7 @@ Contributors: loupely
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 2.21.0
+Stable tag: 2.24.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: one-column, full-width-template, translation-ready, custom-colors, editor-style
@@ -53,6 +53,28 @@ From Appearance, Loupely Canvas. A single page can override them under the Heade
 This full edition is distributed through GitHub and loupelycanvas.com. It includes a built in update checker that watches the project's GitHub releases, so update notices appear in wp-admin and you can update in one click. The Loupely Canvas Lite edition on WordPress.org updates through the directory instead.
 
 == Changelog ==
+
+= 2.24.1 =
+* The SEO switch now reads Activate SEO features in Loupely Canvas, and turning it off also hides the SEO fields from the editor on pages, posts, and custom post types, not only the front end output. Saved SEO values are kept. Removed the SEO link from the settings jump bar so it spans the full width again; the SEO controls still live under Theme Settings.
+
+= 2.24.0 =
+* Added an SEO output switch to Theme Settings. Turning it off stops every Canvas SEO tag and schema on the front end, the theme and Canvas Pro together, so another SEO plugin can take over without two sets of tags. Your saved SEO values are kept. The Wipe content tool now also removes the category and group terms that Canvas Pro leaves behind, both while Pro is active and after it is gone, and clears the new SEO output setting on a settings reset.
+
+= 2.23.0 =
+* Schema dates now come from the WordPress publish date and are left out until a page is published or scheduled, with a note in the editor explaining how dates work for drafts and scheduled pages. Added an SEO data option to the Wipe content tool that clears the saved SEO from pages and posts (and any custom post type) while keeping the content.
+
+= 2.22.2 =
+* Fixed the Generate SEO page schema button so it fills the code box when that box is a CodeMirror editor. The page schema now includes the social share image, and the share image field notes that it doubles as the schema image. Styled the Select image and Clear buttons in the Canvas sage.
+
+= 2.22.1 =
+* The Generate SEO page schema button now preselects a schema type, so it builds the schema on the first click, and lists which fields it included and left out above the code box. Added character counters to the SEO title and meta description with the recommended lengths, and styled the generate button in the Canvas sage.
+
+= 2.22.0 =
+* Added per page SEO to the page settings: an SEO title, a meta description, a social share image, a schema type, and a JSON-LD box with a button that builds the page schema from those fields. The front end prints the title override, meta description, Open Graph and Twitter tags, and the page schema.
+
+= 2.21.1 =
+* Added a New Canvas page link to the WordPress toolbar, beside the edit link, for anyone who can create pages.
+* Fixed a parse error in the search results template that could break the search page.
 
 = 2.21.0 =
 * New header and footer tokens: {site_url} (homepage URL without trailing slash), {page_title} (current page or post title), {current_url} (full URL of the current page).

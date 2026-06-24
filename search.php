@@ -16,9 +16,9 @@ if ( have_posts() ) :
     // Only render pagination here when the user has not placed the
     // {pagination} token in their Post card template, to avoid double output.
     $lc_card_tpl = trim( (string) get_option( 'lc_post_card_html', '' ) );
-    if ( strpos( $lc_card_tpl, '{pagination}' ) === false ) {
+    if ( strpos( $lc_card_tpl, '{pagination}' ) === false ) :
         lc_render_pagination();
-    }
+    endif;
 else :
     echo '<p class="lc-no-results">' . esc_html__( 'Nothing matched your search. Try different words.', 'loupely-canvas' ) . '</p>';
     echo lc_search_form();

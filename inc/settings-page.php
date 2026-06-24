@@ -47,6 +47,12 @@ function lc_register_settings() {
         'sanitize_callback' => 'lc_sanitize_checkbox',
         'default'           => '1',
     ] );
+
+    register_setting( 'lc_html_settings', 'lc_seo_enabled', [
+        'type'              => 'boolean',
+        'sanitize_callback' => 'lc_sanitize_checkbox',
+        'default'           => '1',
+    ] );
 }
 add_action( 'admin_init', 'lc_register_settings' );
 
@@ -341,7 +347,20 @@ function lc_render_settings_page() {
 
             <h2 id="lc-sec-theme-settings" class="lc-section" style="margin-top:28px;"><?php echo esc_html__( 'Theme Settings', 'loupely-canvas' ); ?></h2>
 
-            <h3 style="margin-bottom:6px;"><?php echo esc_html__( 'Find and replace bar', 'loupely-canvas' ); ?></h3>
+            <h3 id="lc-sec-seo" class="lc-section" style="margin-bottom:6px;"><?php echo esc_html__( 'SEO output', 'loupely-canvas' ); ?></h3>
+            <p style="max-width:680px;color:#50575e;margin-top:0;">
+                <?php echo esc_html__( 'Canvas writes the meta description, Open Graph and Twitter tags, and the schema for your pages, posts, and custom post types. Turn this off to stop all of it, both the theme and the Canvas Pro SEO settings, so another SEO plugin can take over without two sets of tags fighting. Your saved SEO values are kept; they just stop printing.', 'loupely-canvas' ); ?>
+            </p>
+            <p style="max-width:680px;color:#5c7f68;background:#f1f6f2;border:1px solid #cfe0d3;border-radius:6px;padding:10px 14px;">
+                <?php echo esc_html__( 'If you are using a different SEO plugin, you can turn off Canvas SEO here.', 'loupely-canvas' ); ?>
+            </p>
+            <input type="hidden" name="lc_seo_enabled" value="0">
+            <label>
+                <input type="checkbox" name="lc_seo_enabled" value="1" <?php checked( get_option( 'lc_seo_enabled', '1' ), '1' ); ?>>
+                <?php echo esc_html__( 'Activate SEO features in Loupely Canvas', 'loupely-canvas' ); ?>
+            </label>
+
+            <h3 style="margin-bottom:6px;margin-top:22px;"><?php echo esc_html__( 'Find and replace bar', 'loupely-canvas' ); ?></h3>
             <p style="max-width:680px;color:#50575e;margin-top:0;">
                 <?php echo esc_html__( 'Adds a Ctrl+F or Cmd+F find and replace bar inside the HTML boxes, the block editor, and these settings boxes. Turn it off to remove it from every editor.', 'loupely-canvas' ); ?>
             </p>

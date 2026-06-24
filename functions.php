@@ -10,9 +10,11 @@
  *   inc/post-templates.php Blog passthrough: post card, single post, archive, search and 404
  *   inc/editor-preview.php Carries the Head code design into the editor preview
  *   inc/page-meta.php      Per page settings: header and footer override, title, code, more
+ *   inc/seo.php            Per page SEO: title, description, share image, and page schema
  *   inc/starter-content.php  One click example header, footer and page
  *   inc/reset-content.php  Reset the theme settings, or wipe all content, with a typed confirmation
  *   inc/editor-tools.php   Loads the find and replace tool in the editor and settings
+ *   inc/admin-bar.php      Adds the New Canvas page link to the WordPress toolbar
  *   inc/lite-migration.php Offers to import a Lite site's header, footer, and per page settings
  *
  * The theme stays out of the way on the front end. Everything visible comes
@@ -21,7 +23,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'LC_VERSION', '2.21.0' );
+define( 'LC_VERSION', '2.24.1' );
 
 
 // ===========================================================
@@ -125,9 +127,11 @@ require get_template_directory() . '/inc/editor-preview.php';
 require get_template_directory() . '/inc/settings-page.php';
 require get_template_directory() . '/inc/site-basics.php';
 require get_template_directory() . '/inc/page-meta.php';
+require get_template_directory() . '/inc/seo.php';
 require get_template_directory() . '/inc/starter-content.php';
 require get_template_directory() . '/inc/reset-content.php';
 require get_template_directory() . '/inc/editor-tools.php';
+require get_template_directory() . '/inc/admin-bar.php';
 require get_template_directory() . '/inc/updater.php';
 require get_template_directory() . '/inc/pro-panel.php';
 require get_template_directory() . '/inc/lite-migration.php';

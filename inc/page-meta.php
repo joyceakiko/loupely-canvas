@@ -224,6 +224,13 @@ function lc_page_settings_render( $post ) {
 		. esc_html__( 'Printed just before the closing body tag on this page only. Use it for a page-specific script or widget.', 'loupely-canvas' )
 		. '</p>';
 
+	/**
+	 * After the theme's own page-settings fields. A feature that adds more
+	 * controls to this block, such as the SEO section, renders them here, so they
+	 * appear in every editor that mounts lc_page_settings_render().
+	 */
+	do_action( 'lc_page_settings_after', $id );
+
 	// The show/hide toggle for the custom header and footer boxes lives in
 	// assets/page-meta.js, enqueued on the editor screens by lc_page_meta_assets().
 }

@@ -133,6 +133,13 @@ function lc_seo_render_section( $id ) {
 	echo '<p style="' . esc_attr( $help_css ) . 'margin-bottom:6px;">'
 		. esc_html__( 'Search and social settings for this page. The noindex switch is under Page options above.', 'loupely-canvas' )
 		. '</p>';
+	printf(
+		'<p style="%smargin-bottom:6px;">%s <a href="%s" style="color:#5C7F68;">%s</a>.</p>',
+		esc_attr( $help_css ),
+		esc_html__( 'If you are using another SEO plugin or wish to disable SEO features in Loupely Canvas, you can turn this feature off in the', 'loupely-canvas' ),
+		esc_url( admin_url( 'themes.php?page=lc-header-footer-html#lc-sec-seo' ) ),
+		esc_html__( 'Loupely Canvas theme settings', 'loupely-canvas' )
+	);
 
 	// SEO title.
 	echo '<h4 style="' . esc_attr( $head_css ) . '">' . esc_html__( 'SEO title', 'loupely-canvas' ) . '</h4>';
@@ -571,3 +578,26 @@ function lc_seo_head(): void {
 	}
 }
 add_action( 'wp_head', 'lc_seo_head', 5 );
+
+/**
+ * Make sure the WordPress sitemap is listed in robots.txt. WordPress already adds
+ * this line to its default virtual robots.txt, but if a plugin or a static file
+ * has replaced robots.txt the line can go missing, which stops search engines
+ * from discovering the sitemap on their own. This adds the line when it is not
+ * already present, so discovery holds regardless of what else touches robots.txt.
+ * It only runs for the default public robots.txt, never when the site is set to
+ * discourage search engines.
+ */
+function lc_seo_robots_txt_sitemap( $output, $public ) {
+	if ( ! $public ) {
+		return $output;
+	}
+	$sitemap = home_url( '/wp-sitemap.xml' );
+	if ( strpos( (string) $output, $sitemap ) !== false ) {
+		return $output;
+	}
+	$output  = rtrim( (string) $output ) . "\n";
+	$output .= 'Sitemap: ' . esc_url_raw( $sitemap ) . "\n";
+	return $output;
+}
+add_filter( 'robots_txt', 'lc_seo_robots_txt_sitemap', 20, 2 );

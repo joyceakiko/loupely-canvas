@@ -385,9 +385,6 @@ function lc_render_settings_page() {
             $seo     = lc_seo_defaults_get();
             ?>
             <div class="lc-seo-defaults" <?php echo $seo_on ? '' : 'hidden'; ?>>
-                <p style="max-width:680px;color:#664d03;background:#fff8e5;border:1px solid #f0e0a8;border-radius:6px;padding:10px 14px;margin-top:14px;">
-                    <?php echo esc_html__( 'If you run another SEO plugin such as Yoast or Rank Math, it prints these tags too. Use one or the other to avoid two sets of tags.', 'loupely-canvas' ); ?>
-                </p>
                 <p style="max-width:680px;color:#50575e;">
                     <?php echo esc_html__( 'Site wide defaults and structured data. Each page, post, and custom post type sets its own SEO in the SEO section on the editor; these fill in where a page has not set its own.', 'loupely-canvas' ); ?>
                 </p>
@@ -432,6 +429,24 @@ function lc_render_settings_page() {
                         <td><input type="text" name="lc_seo_defaults[twitter_site]" value="<?php echo esc_attr( $seo['twitter_site'] ); ?>" class="regular-text" placeholder="@yoursite"></td>
                     </tr>
                 </table>
+
+                <h3 id="lc-sec-sitemap" style="margin-bottom:6px;margin-top:22px;"><?php echo esc_html__( 'Sitemap', 'loupely-canvas' ); ?></h3>
+                <?php $lc_sitemap_url = home_url( '/wp-sitemap.xml' ); ?>
+                <p style="max-width:680px;color:#50575e;margin-top:0;">
+                    <?php echo esc_html__( 'WordPress builds an XML sitemap for your site automatically and keeps it up to date as you add pages, posts, and custom post types. Search engines use it to find your pages. Your sitemap is at:', 'loupely-canvas' ); ?>
+                </p>
+                <p style="margin:0 0 12px;">
+                    <a href="<?php echo esc_url( $lc_sitemap_url ); ?>" target="_blank" rel="noopener" style="color:#5C7F68;font-family:Menlo,Consolas,monospace;font-size:13px;"><?php echo esc_html( $lc_sitemap_url ); ?></a>
+                </p>
+                <p style="max-width:680px;color:#50575e;">
+                    <?php
+                    printf(
+                        /* translators: %s: link to Google Search Console. */
+                        esc_html__( 'The sitemap is already listed in your robots.txt so search engines can discover it on their own. To have Google track it directly, submit the sitemap address once in %s.', 'loupely-canvas' ),
+                        '<a href="https://search.google.com/search-console" target="_blank" rel="noopener" style="color:#5C7F68;">' . esc_html__( 'Google Search Console', 'loupely-canvas' ) . '</a>'
+                    );
+                    ?>
+                </p>
             </div>
 
             <h3 style="margin-bottom:6px;margin-top:22px;"><?php echo esc_html__( 'Find and replace bar', 'loupely-canvas' ); ?></h3>

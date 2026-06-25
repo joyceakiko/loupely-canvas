@@ -3,7 +3,7 @@ Contributors: loupely
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 2.27.0
+Stable tag: 2.29.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: one-column, full-width-template, translation-ready, custom-colors, editor-style
@@ -53,6 +53,18 @@ From Appearance, Loupely Canvas. A single page can override them under the Heade
 This full edition is distributed through GitHub and loupelycanvas.com. It includes a built in update checker that watches the project's GitHub releases, so update notices appear in wp-admin and you can update in one click. The Loupely Canvas Lite edition on WordPress.org updates through the directory instead.
 
 == Changelog ==
+
+= 2.29.1 =
+* The Sitemap section now hides along with the rest of the SEO settings when SEO features are turned off. Restored the Find and replace bar heading and trimmed the sitemap copy.
+
+= 2.29.0 =
+* Added a Sitemap section to the SEO settings showing your sitemap address with a link, a pointer to submit it once in Google Search Console, and automatic listing of the sitemap in robots.txt so search engines can find it.
+* Removed the extra note about other SEO plugins printing duplicate tags.
+* The Generate SEO page schema button now keeps white text in every state.
+
+= 2.28.0 =
+* Added a note in the per page SEO box pointing to the theme SEO setting for turning SEO output off when another SEO plugin is in use, with a link to that setting.
+* The Generate SEO page schema button now keeps white text wherever it appears.
 
 = 2.27.0 =
 * A JavaScript error in the site-wide Head or Body code box is now traced back to the site-wide code in the Canvas Pro error log. The code prints exactly as before; only a source marker is added so an error can be attributed. With Canvas Pro absent the code prints unchanged and is simply not traced.

@@ -6,10 +6,13 @@
  * and the field summary the button prints above the code box.
  */
 
-.lc-seo .lc-seo-generate {
+.lc-seo .lc-seo-generate,
+.lc-seo button.lc-seo-generate.button,
+.lc-seo .lc-seo-generate:disabled,
+.lc-seo button.lc-seo-generate.button:disabled {
 	background: #7a9e87;
 	border-color: #5c7f68;
-	color: #fff;
+	color: #fff !important;
 	text-shadow: none;
 	box-shadow: none;
 }

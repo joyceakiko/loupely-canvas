@@ -54,6 +54,9 @@ This full edition is distributed through GitHub and loupelycanvas.com. It includ
 
 == Changelog ==
 
+= 2.29.2 =
+* Added lc_canvas_guide_mount action hook in footer.php for the Toy Kit guide runtime. Fires only when lc_tk_guide_mount is defined, so sites without the Kit are unaffected.
+
 = 2.29.1 =
 * The Sitemap section now hides along with the rest of the SEO settings when SEO features are turned off. Restored the Find and replace bar heading and trimmed the sitemap copy.
 
